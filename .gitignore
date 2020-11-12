@@ -48,3 +48,5 @@ Thumbs.db
 *.mov
 *.wmv
 
+/Day01SwingFirst/nbproject/private/
+/Day01Task01/nbproject/private/
