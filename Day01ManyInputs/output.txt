@@ -1,0 +1,15 @@
+
+
+Your name: test; age: 36 and Up; pets: Cat, Dog, Other; Continent: North America; Temperature: 27
+
+
+Your name: test; age: below 18; pets: Dog; Continent: North America; Temperature: 35
+
+
+Your name: testvvfvdsd; age: 18-35; pets: Dog; Continent: South America; Temperature: 29
+
+Your name: test test; age: below 18; pets: Dog, Other; Continent: South America; Temperature: 29
+
+
+Your name: test test test; age: 18-35; pets: Dog, Other; Continent: South America; Temperature: 23
+
