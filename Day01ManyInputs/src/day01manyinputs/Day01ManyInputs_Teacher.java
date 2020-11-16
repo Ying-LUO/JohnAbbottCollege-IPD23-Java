@@ -5,10 +5,10 @@
  */
 package day01manyinputs;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 import java.util.ArrayList;
 
@@ -269,6 +269,19 @@ public class Day01ManyInputs_Teacher extends javax.swing.JFrame {
         int temperature = slCTemperature.getValue();
                                                                                                                        // USE STRING JOIN WITH COMA SEPERATOR
         String result = String.format("%nYour name: %s; age: %s; pets: %s; Continent: %s; Temperature: %d%n", name, age, String.join(", ", petList), continent, temperature);
+        
+        /* cannot catch up
+        
+        try (PrintWriter fileOutput = new PrintWriter(new FileWriter(new File("output.txt", true)))){
+            
+            fileOutput.write(result);
+            
+        }catch( IOException ex){
+            
+        }
+        
+        
+        */
         
         if((rdbtBelow18.isSelected() || rdbt18To35.isSelected() || rdbt36Up.isSelected()) && (!name.isEmpty())){
             JOptionPane.showMessageDialog(this, result);
