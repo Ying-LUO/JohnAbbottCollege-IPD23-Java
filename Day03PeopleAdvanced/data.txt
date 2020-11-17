@@ -1,0 +1,11 @@
+Test1;178;1999/01/10
+Test2;178;1999/01/10
+Test3;178;1999/01/10Test1 is 178cm tall born Sun Jan 10 00:00:00 EST 1999
+
+Test1 is 178cm tall born Sun Jan 10 00:00:00 EST 1999
+Test2 is 178cm tall born Sun Jan 10 00:00:00 EST 1999
+
+Test1 is 178cm tall born Sun Jan 10 00:00:00 EST 1999
+Test2 is 178cm tall born Sun Jan 10 00:00:00 EST 1999
+Test3 is 178cm tall born Sun Jan 10 00:00:00 EST 1999
+
