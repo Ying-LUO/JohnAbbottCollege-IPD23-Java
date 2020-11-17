@@ -65,6 +65,11 @@ public class Quiz1Todo extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Quiz1Todos");
         setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         lstTodo.setModel(modelListTodo);
         lstTodo.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -311,9 +316,24 @@ public class Quiz1Todo extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tfDifficultyKeyReleased
 
+    static File chosenFile;
+    
     private void btExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExportActionPerformed
         // TODO add your handling code here:
-        saveDataToFile();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Text documents (*.txt)", "txt"));
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            
+            chosenFile = fileChooser.getSelectedFile();
+            
+            if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(SUFFIX_DEFAULT)){
+                chosenFile = new File(fileChooser.getSelectedFile() + SUFFIX_DEFAULT);
+            }
+            
+            saveDataToFile();
+        }
+        
     }//GEN-LAST:event_btExportActionPerformed
 
     private void lstTodoValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstTodoValueChanged
@@ -331,6 +351,14 @@ public class Quiz1Todo extends javax.swing.JFrame {
             btUpdate.setEnabled(false);
         }
     }//GEN-LAST:event_lstTodoValueChanged
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        
+        chosenFile = new File(DATA_FILENAME);
+        saveDataToFile();
+        
+    }//GEN-LAST:event_formWindowClosing
 
     final String DATA_FILENAME = "todos.txt";
     
@@ -391,33 +419,20 @@ public class Quiz1Todo extends javax.swing.JFrame {
     
     void saveDataToFile() {
         
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Text documents (*.txt)", "txt"));
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        
-        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            
-            File chosenFile = fileChooser.getSelectedFile();
-            
-            if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(SUFFIX_DEFAULT)){
-                chosenFile = new File(fileChooser.getSelectedFile() + SUFFIX_DEFAULT);
-            }
-            
-            try (PrintWriter fileOutput = new PrintWriter(chosenFile)) {
-                
-                for (int i = 0; i < modelListTodo.size(); i++) {
-                    Todo todo = modelListTodo.getElementAt(i);
-                    String dataLine = String.format("%s;%d;%s;%s", 
-                                                    todo.task,
-                                                    todo.difficulty, 
-                                                    Todo.dateFormat.format(todo.dueDate),
-                                                    todo.status);
-                    fileOutput.println(dataLine);
-                }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error saving data to file:\n" + ex.getMessage(),
-                        "File error", JOptionPane.ERROR_MESSAGE);
-            }
+        try (PrintWriter fileOutput = new PrintWriter(chosenFile)) {
 
+            for (int i = 0; i < modelListTodo.size(); i++) {
+                Todo todo = modelListTodo.getElementAt(i);
+                String dataLine = String.format("%s;%d;%s;%s", 
+                                                todo.task,
+                                                todo.difficulty, 
+                                                Todo.dateFormat.format(todo.dueDate),
+                                                todo.status);
+                fileOutput.println(dataLine);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error saving data to file:\n" + ex.getMessage(),
+                    "File error", JOptionPane.ERROR_MESSAGE);
         }
         
     }

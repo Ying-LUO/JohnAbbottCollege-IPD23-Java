@@ -1,6 +1,4 @@
 Buy Milk 2% ;2;2020-02-02;Pending
 Buy Milk 2% test;3;2020-02-23;Done
-Buy Milk 2% test;2;2020-03-24;Pending
-Buy Milk 2% testvvddsvdsvs;3;2023-03-01;Done
-Buy Milk 2% testvvddsvdsvs;3;2023-03-01;Pending
-Buy Milk 2% test;2;2010-03-24;Delegated
+Buy Milk 2% testvvddsvdsvs;3;2023-03-01;Delegated
+Buy Milk 2% test 2nd;2;2010-03-24;Done
