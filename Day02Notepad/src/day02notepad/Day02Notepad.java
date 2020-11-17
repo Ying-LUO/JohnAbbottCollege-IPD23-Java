@@ -31,6 +31,9 @@ class MyCustomFilter extends javax.swing.filechooser.FileFilter {
  * @author YingLuo
  */
 public class Day02Notepad extends javax.swing.JFrame {
+    
+    boolean isDocModified;
+    File currentFile;
 
     /**
      * Creates new form Day02Notepad

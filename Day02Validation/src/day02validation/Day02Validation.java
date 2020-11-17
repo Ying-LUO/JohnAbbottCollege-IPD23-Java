@@ -237,13 +237,13 @@ public class Day02Validation extends javax.swing.JFrame {
     private static final String NAME_PATTERN = 
         "^\\W*(?:\\w+\\b\\W*){1,50}$";
     
-    private Pattern dobPattern = Pattern.compile(DOB_PATTERN);
+    private Pattern dobPattern = Pattern.compile(DOB_PATTERN);   // good to have the datepicker as date input swing component
     private Pattern namePattern = Pattern.compile(NAME_PATTERN);
     private Pattern passportPattern = Pattern.compile(PASSPORT_PATTERN);
     
     private void btVerifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btVerifyActionPerformed
         // TODO add your handling code here:
-        Matcher dobMatcher = dobPattern.matcher(tfDOB.getText());
+        Matcher dobMatcher = dobPattern.matcher(tfDOB.getText());   // pattern compile is not necessary, you can getText().matches(pattern)
         Matcher nameMatcher = namePattern.matcher(tfName.getText());
         Matcher passportMatcher = passportPattern.matcher(tfPassport.getText());
         
