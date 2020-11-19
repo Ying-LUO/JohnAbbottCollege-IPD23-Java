@@ -31,7 +31,7 @@ public class Traveller {
     
     static final String PASSPORT_PATTERN = "^[A-Z]{2}[0-9]{6}$";
     
-    static final String NAME_PATTERN = "^[-/() \\.A-Za-z0-9]{2,50}$";
+    static final String NAME_PATTERN = "^[-()\\.A-Za-z0-9]{2,50}$";
     
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     
@@ -51,7 +51,7 @@ public class Traveller {
     public void setName(String name) throws InvalidDataException {
         
         if(!name.matches(NAME_PATTERN)){
-            throw new InvalidDataException("Input Name must be 2-50 characters, uppercase/lowercase, digits, space .()-"); 
+            throw new InvalidDataException("Input Name must be 2-50 characters, uppercase/lowercase, digits, .()-"); 
         }
         this.name = name;
     }
@@ -140,7 +140,7 @@ public class Traveller {
     @Override
     public String toString() {
         
-        return "Traveller Name: " + name + 
+        return "Name: " + name + 
                 ", Gender: " + gender + 
                 ", passportNo: " + passportNo + 
                 ", Destination Airport Code: " + destAirportCode + 

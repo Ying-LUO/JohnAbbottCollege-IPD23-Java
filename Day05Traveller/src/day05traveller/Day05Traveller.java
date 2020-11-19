@@ -10,12 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -71,6 +68,7 @@ public class Day05Traveller extends javax.swing.JFrame {
         btUpdate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Traveller List");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -281,13 +279,17 @@ public class Day05Traveller extends javax.swing.JFrame {
                     
                     modelListTraveller.addElement(traveller);
                     
+                }catch(IllegalArgumentException e){
+                    
+                    JOptionPane.showMessageDialog(this, "Failed to find the gender enum data: " + e.getMessage());
+                    
                 }catch (ParseException ex){
                     
-                    JOptionPane.showMessageDialog(this, "Faile to parse the input date: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(this, "Failed to parse the input date: " + ex.getMessage());
                     
                 }catch (InvalidDataException exc){
                     
-                    JOptionPane.showMessageDialog(this, "Faile to create a new Traveller: " + exc.getMessage());
+                    JOptionPane.showMessageDialog(this, "Failed to add a new Traveller: " + exc.getMessage());
                 }
         
     }//GEN-LAST:event_btAddActionPerformed
@@ -305,8 +307,20 @@ public class Day05Traveller extends javax.swing.JFrame {
         if (decision == JOptionPane.OK_OPTION) {
             modelListTraveller.removeElement(traveller);
         }
+        resetDataInTextField();
     }//GEN-LAST:event_btDeleteActionPerformed
 
+    private void resetDataInTextField(){
+        
+        tfName.setText("");
+        cmbGender.setSelectedIndex(0);
+        tfPassportNo.setText("");
+        tfDestAirportCode.setText("");
+        tfDepDate.setText("");
+        tfRetDate.setText("");
+        
+    }
+    
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
         // TODO add your handling code here:
         Traveller traveller = lstTraveller.getSelectedValue();
@@ -322,21 +336,20 @@ public class Day05Traveller extends javax.swing.JFrame {
             traveller.setRetDate(Traveller.dateFormat.parse(tfRetDate.getText()));
             
             lstTraveller.setModel(modelListTraveller); // force JList to re-read data
-            tfName.setText("");
-            cmbGender.setSelectedIndex(0);
-            tfPassportNo.setText("");
-            tfDestAirportCode.setText("");
-            tfDepDate.setText("");
-            tfRetDate.setText("");
+            resetDataInTextField();
             
+        }catch(IllegalArgumentException e){
+                    
+                    JOptionPane.showMessageDialog(this, "Failed to find the gender enum data: " + e.getMessage());
+                    
         }catch (ParseException ex){
                     
-                    JOptionPane.showMessageDialog(this, "Faile to parse the input date: " + ex.getMessage());
-                    
-                }catch (InvalidDataException exc){
-                    
-                    JOptionPane.showMessageDialog(this, "Faile to create a new Traveller: " + exc.getMessage());
-                }
+                    JOptionPane.showMessageDialog(this, "Failed to parse the input date: " + ex.getMessage());
+
+        }catch (InvalidDataException exc){
+
+                    JOptionPane.showMessageDialog(this, "Failed to update: " + exc.getMessage());
+        }
 
         
     }//GEN-LAST:event_btUpdateActionPerformed
@@ -382,13 +395,17 @@ public class Day05Traveller extends javax.swing.JFrame {
                     
                     modelListTraveller.addElement(traveller);
                     
+                }catch(IllegalArgumentException e){
+                    
+                    JOptionPane.showMessageDialog(this, "Failed to find the gender enum data: " + e.getMessage());
+                    
                 }catch (ParseException ex){
                     
-                    JOptionPane.showMessageDialog(this, "Faile to parse the input date: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(this, "Failed to parse the input date: " + ex.getMessage());
                     
                 }catch (InvalidDataException exc){
                     
-                    JOptionPane.showMessageDialog(this, "Faile to create a new Traveller: " + exc.getMessage());
+                    JOptionPane.showMessageDialog(this, "Failed to load data from file: " + exc.getMessage());
                 }
 
             }
