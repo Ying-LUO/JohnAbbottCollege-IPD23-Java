@@ -28,8 +28,8 @@ public class Day05Traveller extends javax.swing.JFrame {
     DefaultListModel<Traveller> modelListTraveller = new DefaultListModel<>();
     
     static final String SUFFIX_TXT = ".txt";
-    static File chosenFile;
     static final String FILENAME_PATTERN = ".+\\.[A-Za-z0-9]+$";
+    static final String DATA_FILENAME = "travels.txt";
 
     /**
      * Creates new form Day05
@@ -71,6 +71,7 @@ public class Day05Traveller extends javax.swing.JFrame {
         btUpdate = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -232,6 +233,7 @@ public class Day05Traveller extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void tfDepDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfDepDateActionPerformed
@@ -244,25 +246,24 @@ public class Day05Traveller extends javax.swing.JFrame {
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         // TODO add your handling code here:
-        chosenFile = new File(DATA_FILENAME);
-        saveDataToFile();
+        saveDataToFile(new File(DATA_FILENAME));
+        dispose();
     }//GEN-LAST:event_formWindowClosing
 
     private void btExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExportActionPerformed
         // TODO add your handling code here:
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Text documents (*.txt)", "txt"));
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         
+        fileChooser.setDialogTitle("Export to File");
         if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             
-            chosenFile = fileChooser.getSelectedFile();
+            File chosenFile = fileChooser.getSelectedFile();
             
             if(!chosenFile.getName().toLowerCase().matches(FILENAME_PATTERN)){
                 
                 chosenFile = new File(fileChooser.getSelectedFile() + SUFFIX_TXT);
             }
             
-            saveDataToFile();
+            saveDataToFile(chosenFile);
         }
     }//GEN-LAST:event_btExportActionPerformed
 
@@ -298,7 +299,7 @@ public class Day05Traveller extends javax.swing.JFrame {
             return;
         }
         int decision = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete this item?\n" + traveller,
+                "Are you sure you want to delete this item?\n" + traveller.toDataString(),
                 "Confirm deletion",
                 JOptionPane.OK_CANCEL_OPTION);
         if (decision == JOptionPane.OK_OPTION) {
@@ -358,10 +359,7 @@ public class Day05Traveller extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_lstTravellerValueChanged
-
-    private final String DATA_FILENAME = "travels.txt";
-    
-    // called in constructor to load data from "data.txt"
+  
     void loadDataFromFile() {
         
         int lineNo = 0;
@@ -400,9 +398,9 @@ public class Day05Traveller extends javax.swing.JFrame {
         
     }
     
-    void saveDataToFile() {
+    void saveDataToFile(File file) {
         
-        try (PrintWriter fileOutput = new PrintWriter(chosenFile)) {
+        try (PrintWriter fileOutput = new PrintWriter(file)) {
 
             for (int i = 0; i < modelListTraveller.size(); i++) {
                 
@@ -452,7 +450,7 @@ public class Day05Traveller extends javax.swing.JFrame {
                 try {
                     new Day05Traveller().setVisible(true);
                 } catch (InvalidDataException ex) {
-                    JOptionPane.showMessageDialog(null, "Error in Traveller: " + ex.getMessage());
+                    JOptionPane.showMessageDialog(null, "Error in Traveller List: " + ex.getMessage());
                 }
             }
         });

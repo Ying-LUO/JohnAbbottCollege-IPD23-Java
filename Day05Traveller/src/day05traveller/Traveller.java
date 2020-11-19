@@ -144,8 +144,8 @@ public class Traveller {
                 ", Gender: " + gender + 
                 ", passportNo: " + passportNo + 
                 ", Destination Airport Code: " + destAirportCode + 
-                ", Depature Date: " + depDate + 
-                ", Return Date: " + retDate;
+                ", Depature Date: " + dateFormat.format(this.depDate) + 
+                ", Return Date: " + dateFormat.format(this.retDate);
     }
     
     public String toDataString(){
