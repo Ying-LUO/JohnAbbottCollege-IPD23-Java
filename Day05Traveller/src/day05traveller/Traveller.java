@@ -36,12 +36,35 @@ public class Traveller {
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     
     public Traveller(String name, Gender gender, String passportNo, String destAirportCode, Date depDate, Date retDate) throws InvalidDataException {
+        // YING LUO: TO APPLY BUSINESS LOGIC CHECKING IN SETTER METHOD, AVOID TO USE "THIS.NAME = NAME" WHICH WILL NOT CHECK THE VALUE IN CONSTRUCTION
         setName(name);
         setGender(gender);
         setPassportNo(passportNo);
         setDestAirportCode(destAirportCode);
         setDepDate(depDate);
         setRetDate(retDate);
+    }
+    
+    public Traveller(String dataLine) throws InvalidDataException{
+        
+        String[] dataStr = dataLine.split(";");
+        if (dataStr.length != 6) {
+            throw new InvalidDataException("Invalid data structure,\nat least Name;Gender;PassportNo;DestAirportCode;DepartDate;ReturnDate per line"); 
+        }
+        
+        try {
+            setName(dataStr[0]);
+            setGender(Gender.valueOf(dataStr[1]));
+            setPassportNo(dataStr[2]);
+            setDestAirportCode(dataStr[3]);
+            setDepDate(dateFormat.parse(dataStr[4]));
+            setRetDate(dateFormat.parse(dataStr[5]));
+        } catch(IllegalArgumentException e){                
+            throw new InvalidDataException("Failed to find the gender enum data: " + e.getMessage());               
+        } catch (ParseException ex) {
+            throw new InvalidDataException("Failed to parse the input date: " + ex.getMessage());
+        }
+        
     }
 
     public String getName() {
@@ -51,7 +74,7 @@ public class Traveller {
     public void setName(String name) throws InvalidDataException {
         
         if(!name.matches(NAME_PATTERN)){
-            throw new InvalidDataException("Input Name must be 2-50 characters, uppercase/lowercase, digits, .()-"); 
+            throw new InvalidDataException("Name must be 2-50 characters, uppercase/lowercase, digits, .()-"); 
         }
         this.name = name;
     }
@@ -72,7 +95,7 @@ public class Traveller {
 
     public void setPassportNo(String passportNo) throws InvalidDataException {
         if(!passportNo.matches(PASSPORT_PATTERN)){
-            throw new InvalidDataException("Input passport number must be two uppercase letters with 6 digits, e.g. AA123456"); 
+            throw new InvalidDataException("PassportNo must be two uppercase letters with 6 digits, e.g. AA123456"); 
         }
         this.passportNo = passportNo;
     }
@@ -84,7 +107,7 @@ public class Traveller {
     public void setDestAirportCode(String destAirportCode) throws InvalidDataException {
         
         if(!destAirportCode.matches(AIRPORT_PATTERN)){
-            throw new InvalidDataException("Input Destination Airport Code must be three uppercase letters, e.g. YUL"); 
+            throw new InvalidDataException("Destination Airport Code must be three uppercase letters, e.g. YUL"); 
         }
         this.destAirportCode = destAirportCode;
     }
@@ -103,7 +126,7 @@ public class Traveller {
             this.depDate = depDate;
             
         } catch (ParseException ex) {
-            throw new InvalidDataException("Year must be between 1900 and 2100", ex);
+            throw new InvalidDataException("Failed to parse date", ex);
         }
         
     }
@@ -126,7 +149,7 @@ public class Traveller {
             this.retDate = retDate;
             
         } catch (ParseException ex) {
-            throw new InvalidDataException("Year must be between 1900 and 2100", ex);
+            throw new InvalidDataException("Failed to parse date", ex);
         }
     }
 
