@@ -327,8 +327,10 @@ public class Quiz1Todo extends javax.swing.JFrame {
             
             chosenFile = fileChooser.getSelectedFile();
             
-            if(!fileChooser.getSelectedFile().getAbsolutePath().endsWith(SUFFIX_DEFAULT)){
-                chosenFile = new File(fileChooser.getSelectedFile() + SUFFIX_DEFAULT);
+            // better use regular expression to verify the document type
+            if(!chosenFile.getName().toLowerCase().matches(".+\\.[A-Za-z0-9]+$")){
+            //if(!chosenFile.getAbsolutePath().toLowerCase().endsWith(SUFFIX_TXT)){
+                chosenFile = new File(fileChooser.getSelectedFile() + SUFFIX_TXT);
             }
             
             saveDataToFile();
@@ -360,7 +362,7 @@ public class Quiz1Todo extends javax.swing.JFrame {
         
     }//GEN-LAST:event_formWindowClosing
 
-    final String DATA_FILENAME = "todos.txt";
+    private final String DATA_FILENAME = "todos.txt";
     
     // called in constructor to load data from "data.txt"
     void loadDataFromFile() {
@@ -415,7 +417,7 @@ public class Quiz1Todo extends javax.swing.JFrame {
         }
     }
     
-    final String SUFFIX_DEFAULT = ".txt";
+    final String SUFFIX_TXT = ".txt";
     
     void saveDataToFile() {
         
