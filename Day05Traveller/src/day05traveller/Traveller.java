@@ -7,10 +7,8 @@ package day05traveller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,7 +16,7 @@ import javax.swing.JOptionPane;
  * @since 2020-NOV-18
  * @version 1.0
  */
-public class Traveller {
+public class Traveller implements Comparable<Traveller>{
     
     private String name;
     private Gender gender;
@@ -182,5 +180,29 @@ public class Traveller {
                                     dateFormat.format(this.retDate));
         
     }
+
+    @Override
+    public int compareTo(Traveller t) {
+        return this.name.compareTo(t.name);
+    }
+    
+    static final Comparator<Traveller> compareByLength = new Comparator<Traveller>(){
+        
+        @Override
+        public int compare(Traveller t1, Traveller t2) {
+
+            // this is only primitive type thus does NOT have methods
+            long t1Length = (t2.getDepDate().getTime() - t2.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
+            long t2Length = (t2.getDepDate().getTime() - t2.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
+            
+            // parse it into Long class
+            Long t1long = new Long(t1Length);
+            Long t2long = new Long(t2Length);
+              
+            return t1long.compareTo(t2long);
+ 
+        }
+        
+    };
     
 }

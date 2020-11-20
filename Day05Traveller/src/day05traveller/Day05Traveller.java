@@ -9,6 +9,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
@@ -21,6 +25,8 @@ import javax.swing.JOptionPane;
  * @version 1.0
  */
 public class Day05Traveller extends javax.swing.JFrame {
+    
+    ArrayList<Traveller> travellersList = new ArrayList<>();
     
     DefaultListModel<Traveller> modelListTraveller = new DefaultListModel<>();
     
@@ -66,6 +72,10 @@ public class Day05Traveller extends javax.swing.JFrame {
         btAdd = new javax.swing.JButton();
         btDelete = new javax.swing.JButton();
         btUpdate = new javax.swing.JButton();
+        btSortByName = new javax.swing.JButton();
+        btSortByGender = new javax.swing.JButton();
+        btSortByDepDate = new javax.swing.JButton();
+        btSortByTripLength = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Traveller List");
@@ -76,7 +86,7 @@ public class Day05Traveller extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Traveller List");
+        jLabel1.setText("Sort By");
 
         lstTraveller.setModel(modelListTraveller);
         lstTraveller.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -147,6 +157,34 @@ public class Day05Traveller extends javax.swing.JFrame {
             }
         });
 
+        btSortByName.setText("Name");
+        btSortByName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSortByNameActionPerformed(evt);
+            }
+        });
+
+        btSortByGender.setText("Gender");
+        btSortByGender.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSortByGenderActionPerformed(evt);
+            }
+        });
+
+        btSortByDepDate.setText("Dep. Date");
+        btSortByDepDate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSortByDepDateActionPerformed(evt);
+            }
+        });
+
+        btSortByTripLength.setText("Trip Length");
+        btSortByTripLength.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btSortByTripLengthActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -155,48 +193,58 @@ public class Day05Traveller extends javax.swing.JFrame {
                 .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btExport)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(btAdd)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-                        .addComponent(btDelete)
-                        .addGap(51, 51, 51)
-                        .addComponent(btUpdate))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btSortByName)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btSortByGender)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btSortByDepDate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmbGender, 0, 203, Short.MAX_VALUE)
-                                    .addComponent(tfPassportNo)
-                                    .addComponent(tfDestAirportCode)
-                                    .addComponent(tfDepDate)
-                                    .addComponent(tfName)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addGap(18, 18, 18)
-                                .addComponent(tfRetDate, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(29, Short.MAX_VALUE))
+                        .addComponent(btSortByTripLength))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel2)
+                                .addComponent(jLabel3)
+                                .addComponent(jLabel4)
+                                .addComponent(jLabel5)
+                                .addComponent(jLabel6))
+                            .addGap(18, 18, 18)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(cmbGender, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(tfPassportNo)
+                                .addComponent(tfDestAirportCode)
+                                .addComponent(tfDepDate)
+                                .addComponent(tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addComponent(jLabel7)
+                            .addGap(18, 18, 18)
+                            .addComponent(tfRetDate, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btAdd)
+                        .addGap(56, 56, 56)
+                        .addComponent(btDelete)
+                        .addGap(60, 60, 60)
+                        .addComponent(btUpdate)))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(21, 21, 21)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(btSortByName)
+                    .addComponent(btSortByGender)
+                    .addComponent(btSortByDepDate)
+                    .addComponent(btSortByTripLength))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
@@ -220,14 +268,15 @@ public class Day05Traveller extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel7)
-                            .addComponent(tfRetDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(28, 28, 28)
+                            .addComponent(tfRetDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btAdd)
                     .addComponent(btExport)
+                    .addComponent(btAdd)
                     .addComponent(btDelete)
                     .addComponent(btUpdate))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGap(41, 41, 41))
         );
 
         pack();
@@ -376,7 +425,71 @@ public class Day05Traveller extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_lstTravellerValueChanged
+    
+    int btSortNameTag, btSortGenderTag, btSortDepDateTag, btSortLengthTag = 0;
+    
+    private void btSortByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByNameActionPerformed
+        // TODO add your handling code here:
+           
+        travellersList = Collections.list(modelListTraveller.elements());            
+        
+        travellersList.sort(Collections.reverseOrder());
+        //Collections.sort(travellersList);
+        //travellersList.sort(Comparator.comparing(Traveller::getName));
+        
+        resetListModelAfterSorting();
+        
+    }//GEN-LAST:event_btSortByNameActionPerformed
+
+    private void btSortByGenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByGenderActionPerformed
+        // TODO add your handling code here:
+        
+        travellersList = Collections.list(modelListTraveller.elements());            
+
+        //travellersList.sort(Comparator.comparing(Traveller::getGender));
+        
+        travellersList.sort(Comparator.comparing(Traveller::getGender).reversed());
+        
+        resetListModelAfterSorting();
+        
+    }//GEN-LAST:event_btSortByGenderActionPerformed
+
+    private void btSortByDepDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByDepDateActionPerformed
+        // TODO add your handling code here:
+        
+        travellersList = Collections.list(modelListTraveller.elements());            
+        
+        //travellersList.sort(Comparator.comparing(Traveller::getDepDate));
+        travellersList.sort(Comparator.comparing(Traveller::getDepDate).reversed());
+        
+        resetListModelAfterSorting();
+        
+    }//GEN-LAST:event_btSortByDepDateActionPerformed
+
+    private void btSortByTripLengthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByTripLengthActionPerformed
+        // TODO add your handling code here:
+        travellersList = Collections.list(modelListTraveller.elements());            
+    
+        //travellersList.sort(Traveller.compareByLength);
+        travellersList.sort(Traveller.compareByLength.reversed());
+        
+        resetListModelAfterSorting();
+        
+    }//GEN-LAST:event_btSortByTripLengthActionPerformed
   
+    private void resetListModelAfterSorting(){
+        
+        modelListTraveller.clear();
+        
+        for(int i=0; i<travellersList.size(); i++ ){
+            modelListTraveller.addElement(travellersList.get(i));
+        }
+        
+        lstTraveller.setModel(modelListTraveller);
+        
+    }
+    
+    
     void readDataFromFile() throws InvalidDataException {
         
         int lineNo = 0;
@@ -458,6 +571,10 @@ public class Day05Traveller extends javax.swing.JFrame {
     private javax.swing.JButton btAdd;
     private javax.swing.JButton btDelete;
     private javax.swing.JButton btExport;
+    private javax.swing.JButton btSortByDepDate;
+    private javax.swing.JButton btSortByGender;
+    private javax.swing.JButton btSortByName;
+    private javax.swing.JButton btSortByTripLength;
     private javax.swing.JButton btUpdate;
     private javax.swing.JComboBox<String> cmbGender;
     private javax.swing.JFileChooser fileChooser;
