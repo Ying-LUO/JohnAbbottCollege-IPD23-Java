@@ -186,22 +186,17 @@ public class Traveller implements Comparable<Traveller>{
         return this.name.compareTo(t.name);
     }
     
-    static final Comparator<Traveller> compareByLength = new Comparator<Traveller>(){
+    static final Comparator<Traveller> compareByLength = (Traveller t1, Traveller t2) -> {
+        // this is only primitive type thus does NOT have methods
+        long t1LengthInDays = (t1.getDepDate().getTime() - t1.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
+        long t2LengthInDays = (t2.getDepDate().getTime() - t2.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
         
-        @Override
-        public int compare(Traveller t1, Traveller t2) {
-
-            // this is only primitive type thus does NOT have methods
-            long t1Length = (t2.getDepDate().getTime() - t2.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
-            long t2Length = (t2.getDepDate().getTime() - t2.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
-            
-            // parse it into Long class
-            Long t1long = new Long(t1Length);
-            Long t2long = new Long(t2Length);
-              
-            return t1long.compareTo(t2long);
- 
-        }
+        // set it to Long class
+        Long t1long = t1LengthInDays;
+        Long t2long = t2LengthInDays;
+        
+        return t1long.compareTo(t2long);
+        
         
     };
     

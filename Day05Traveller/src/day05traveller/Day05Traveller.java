@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Scanner;
 import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -33,6 +34,8 @@ public class Day05Traveller extends javax.swing.JFrame {
     static final String SUFFIX_TXT = ".txt";
     static final String FILENAME_PATTERN = ".+\\.[A-Za-z0-9]+$";
     static final String DATA_FILENAME = "travels.txt";
+    static final String UP = "\u2191";
+    static final String DOWN = "\u2193";
 
     /**
      * Creates new form Day05
@@ -40,7 +43,7 @@ public class Day05Traveller extends javax.swing.JFrame {
     public Day05Traveller() throws InvalidDataException {
         initComponents();
         readDataFromFile();
-            
+        
     }
 
     /**
@@ -157,28 +160,28 @@ public class Day05Traveller extends javax.swing.JFrame {
             }
         });
 
-        btSortByName.setText("Name");
+        btSortByName.setText("Name*");
         btSortByName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btSortByNameActionPerformed(evt);
             }
         });
 
-        btSortByGender.setText("Gender");
+        btSortByGender.setText("Gender ");
         btSortByGender.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btSortByGenderActionPerformed(evt);
             }
         });
 
-        btSortByDepDate.setText("Dep. Date");
+        btSortByDepDate.setText("Dep. Date ");
         btSortByDepDate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btSortByDepDateActionPerformed(evt);
             }
         });
 
-        btSortByTripLength.setText("Trip Length");
+        btSortByTripLength.setText("Trip Length ");
         btSortByTripLength.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btSortByTripLengthActionPerformed(evt);
@@ -231,7 +234,7 @@ public class Day05Traveller extends javax.swing.JFrame {
                         .addComponent(btDelete)
                         .addGap(60, 60, 60)
                         .addComponent(btUpdate)))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -426,54 +429,183 @@ public class Day05Traveller extends javax.swing.JFrame {
         
     }//GEN-LAST:event_lstTravellerValueChanged
     
-    int btSortNameTag, btSortGenderTag, btSortDepDateTag, btSortLengthTag = 0;
     
     private void btSortByNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByNameActionPerformed
         // TODO add your handling code here:
-           
+        
         travellersList = Collections.list(modelListTraveller.elements());            
         
-        travellersList.sort(Collections.reverseOrder());
-        //Collections.sort(travellersList);
+        if(!btSortByName.getText().contains(UP)&&!btSortByName.getText().contains(DOWN)){
+            btSortByName.setText(btSortByName.getText()+UP);
+        }
+        
+        String btNameStr = btSortByName.getText();
+        
+        
+        if(btNameStr.contains(UP)){
+            Collections.sort(travellersList);
+            btSortByName.setText(btNameStr.replace(UP, DOWN));
+        }else{
+            travellersList.sort(Collections.reverseOrder());
+            btSortByName.setText(btNameStr.replace(DOWN, UP));
+        }    
+
         //travellersList.sort(Comparator.comparing(Traveller::getName));
         
         resetListModelAfterSorting();
+        
+        if(evt.getActionCommand().contains(btSortByName.getText().substring(0, 3))){
+            
+            if(!btSortByName.getText().contains("*")){
+                btSortByName.setText(btSortByName.getText()+ "*");
+            }
+            
+            if(btSortByGender.getText().contains("*")){
+                btSortByGender.setText(btSortByGender.getText().replace("*", ""));
+            }
+            
+            if(btSortByDepDate.getText().contains("*")){
+                btSortByDepDate.setText(btSortByDepDate.getText().replace("*", ""));
+            }
+            
+            if(btSortByTripLength.getText().contains("*")){
+                btSortByTripLength.setText(btSortByTripLength.getText().replace("*", ""));
+            }
+        };
         
     }//GEN-LAST:event_btSortByNameActionPerformed
 
     private void btSortByGenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByGenderActionPerformed
         // TODO add your handling code here:
         
-        travellersList = Collections.list(modelListTraveller.elements());            
+        travellersList = Collections.list(modelListTraveller.elements()); 
+        
+        if(!btSortByGender.getText().contains(UP)&&!btSortByGender.getText().contains(DOWN)){
+            btSortByGender.setText(btSortByGender.getText()+UP);
+        }
+        
+        String btNameStr = btSortByGender.getText();
+        
+        if(btNameStr.contains(UP)){
+            travellersList.sort(Comparator.comparing(Traveller::getGender));
+            btSortByGender.setText(btNameStr.replace(UP, DOWN));
+            
+        }else{
+            travellersList.sort(Comparator.comparing(Traveller::getGender).reversed());
+            btSortByGender.setText(btNameStr.replace(DOWN, UP));
+            
+        }
 
-        //travellersList.sort(Comparator.comparing(Traveller::getGender));
-        
-        travellersList.sort(Comparator.comparing(Traveller::getGender).reversed());
-        
         resetListModelAfterSorting();
+        
+        if(evt.getActionCommand().contains(btSortByGender.getText().substring(0, 3))){
+            
+            if(!btSortByGender.getText().contains("*")){
+                btSortByGender.setText(btSortByGender.getText()+ "*");
+            }
+            
+            if(btSortByName.getText().contains("*")){
+                btSortByName.setText(btSortByName.getText().replace("*", ""));
+            }
+            
+            if(btSortByDepDate.getText().contains("*")){
+                btSortByDepDate.setText(btSortByDepDate.getText().replace("*", ""));
+            }
+            
+            if(btSortByTripLength.getText().contains("*")){
+                btSortByTripLength.setText(btSortByTripLength.getText().replace("*", ""));
+            }
+        };
         
     }//GEN-LAST:event_btSortByGenderActionPerformed
 
     private void btSortByDepDateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByDepDateActionPerformed
         // TODO add your handling code here:
         
-        travellersList = Collections.list(modelListTraveller.elements());            
+        travellersList = Collections.list(modelListTraveller.elements());   
         
-        //travellersList.sort(Comparator.comparing(Traveller::getDepDate));
-        travellersList.sort(Comparator.comparing(Traveller::getDepDate).reversed());
+        if(!btSortByDepDate.getText().contains(UP)&&!btSortByDepDate.getText().contains(DOWN)){
+            btSortByDepDate.setText(btSortByDepDate.getText()+UP);
+        }
+        
+        String btNameStr = btSortByDepDate.getText();
+        
+        if(btNameStr.contains(UP)){
+            travellersList.sort(Comparator.comparing(Traveller::getDepDate));
+            btSortByDepDate.setText(btNameStr.replace(UP, DOWN));
+            
+        }else{
+            travellersList.sort(Comparator.comparing(Traveller::getDepDate).reversed());
+            btSortByDepDate.setText(btNameStr.replace(DOWN, UP));
+            
+        }
         
         resetListModelAfterSorting();
+        
+        if(evt.getActionCommand().contains(btSortByDepDate.getText().substring(0, 3))){
+            
+            if(!btSortByDepDate.getText().contains("*")){
+                btSortByDepDate.setText(btSortByDepDate.getText()+ "*");
+            }
+            
+            if(btSortByName.getText().contains("*")){
+                btSortByName.setText(btSortByName.getText().replace("*", ""));
+            }
+            
+            if(btSortByGender.getText().contains("*")){
+                btSortByGender.setText(btSortByGender.getText().replace("*", ""));
+            }
+            
+            if(btSortByTripLength.getText().contains("*")){
+                btSortByTripLength.setText(btSortByTripLength.getText().replace("*", ""));
+            }
+        };
+
         
     }//GEN-LAST:event_btSortByDepDateActionPerformed
 
     private void btSortByTripLengthActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSortByTripLengthActionPerformed
         // TODO add your handling code here:
-        travellersList = Collections.list(modelListTraveller.elements());            
-    
-        //travellersList.sort(Traveller.compareByLength);
-        travellersList.sort(Traveller.compareByLength.reversed());
         
+        travellersList = Collections.list(modelListTraveller.elements());  
+        
+        if(!btSortByTripLength.getText().contains(UP)&&!btSortByTripLength.getText().contains(DOWN)){
+            btSortByTripLength.setText(btSortByTripLength.getText()+UP);
+        }
+        
+        String btNameStr = btSortByTripLength.getText();
+        
+        if(btNameStr.contains(UP)){
+            travellersList.sort(Traveller.compareByLength);
+            
+            btSortByTripLength.setText(btNameStr.replace(UP, DOWN));
+            
+        }else{
+            travellersList.sort(Traveller.compareByLength.reversed());
+            btSortByTripLength.setText(btNameStr.replace(DOWN, UP));
+            
+        }
+                  
         resetListModelAfterSorting();
+        
+        if(evt.getActionCommand().contains(btSortByTripLength.getText().substring(0, 3))){
+            
+            if(!btSortByTripLength.getText().contains("*")){
+                btSortByTripLength.setText(btSortByTripLength.getText()+ "*");
+            }
+            
+            if(btSortByName.getText().contains("*")){
+                btSortByName.setText(btSortByName.getText().replace("*", ""));
+            }
+            
+            if(btSortByGender.getText().contains("*")){
+                btSortByGender.setText(btSortByGender.getText().replace("*", ""));
+            }
+            
+            if(btSortByDepDate.getText().contains("*")){
+                btSortByDepDate.setText(btSortByDepDate.getText().replace("*", ""));
+            }
+        };
         
     }//GEN-LAST:event_btSortByTripLengthActionPerformed
   
@@ -490,7 +622,7 @@ public class Day05Traveller extends javax.swing.JFrame {
     }
     
     
-    void readDataFromFile() throws InvalidDataException {
+    private void readDataFromFile() throws InvalidDataException {
         
         int lineNo = 0;
         try (Scanner fileInput = new Scanner(new File(DATA_FILENAME))) {
@@ -500,6 +632,9 @@ public class Day05Traveller extends javax.swing.JFrame {
                 Traveller traveller = new Traveller(line);
                 modelListTraveller.addElement(traveller);
             }
+            travellersList = Collections.list(modelListTraveller.elements());
+            Collections.sort(travellersList);
+            resetListModelAfterSorting();
         } catch (InvalidDataException e) {
             JOptionPane.showMessageDialog(this, "Errors reading data file: " + e.getMessage(), "File error", JOptionPane.ERROR_MESSAGE);
             
@@ -509,7 +644,7 @@ public class Day05Traveller extends javax.swing.JFrame {
         
     }
     
-    void saveDataToFile(File file) {
+    private void saveDataToFile(File file) {
         
         try (PrintWriter fileOutput = new PrintWriter(file)) {
 
@@ -525,6 +660,7 @@ public class Day05Traveller extends javax.swing.JFrame {
         }
         
     }
+    
     
     
     /**
