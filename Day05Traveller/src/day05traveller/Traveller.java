@@ -180,6 +180,10 @@ public class Traveller implements Comparable<Traveller>{
                                     dateFormat.format(this.retDate));
         
     }
+    
+    public int getTripLength(){
+        return (int)(retDate.getTime() - depDate.getTime())/ (1000 * 60 * 60 * 24);
+    }
 
     @Override
     public int compareTo(Traveller t) {
@@ -188,15 +192,15 @@ public class Traveller implements Comparable<Traveller>{
     
     static final Comparator<Traveller> compareByLength = (Traveller t1, Traveller t2) -> {
         // this is only primitive type thus does NOT have methods
-        long t1LengthInDays = (t1.getDepDate().getTime() - t1.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
-        long t2LengthInDays = (t2.getDepDate().getTime() - t2.getRetDate().getTime())/ (1000 * 60 * 60 * 24);
+        //long t1LengthInDays = t1.getTripLength();
+        //long t2LengthInDays = t2.getTripLength();
         
         // set it to Long class
-        Long t1long = t1LengthInDays;
-        Long t2long = t2LengthInDays;
+        //Long t1long = t1LengthInDays;
+        //Long t2long = t2LengthInDays;
         
-        return t1long.compareTo(t2long);
-        
+        //return t1long.compareTo(t2long);
+        return t1.getTripLength()-t2.getTripLength();
         
     };
     
