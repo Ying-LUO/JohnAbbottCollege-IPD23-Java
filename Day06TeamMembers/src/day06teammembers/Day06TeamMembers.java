@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
+=======
+>>>>>>> 1a520d7acecbb486659b0e5031a4f65444ad40c4
 
 /**
  *
@@ -98,6 +100,12 @@ public class Day06TeamMembers {
         } catch (FileNotFoundException ex) {
             System.out.println("Error while loading data from File" + ex.getMessage());
         }
+=======
+    public static void main(String[] args) {
+        // TODO code application logic here
+        
+        File file = new File("teams.txt");
+>>>>>>> 1a520d7acecbb486659b0e5031a4f65444ad40c4
         
     }
     
