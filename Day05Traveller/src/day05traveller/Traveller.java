@@ -180,6 +180,10 @@ public class Traveller implements Comparable<Traveller>{
                                     dateFormat.format(this.retDate));
         
     }
+    
+    public int getTripLength(){
+        return (int)(retDate.getTime() - depDate.getTime())/ (1000 * 60 * 60 * 24);
+    }
 
     @Override
     public int compareTo(Traveller t) {

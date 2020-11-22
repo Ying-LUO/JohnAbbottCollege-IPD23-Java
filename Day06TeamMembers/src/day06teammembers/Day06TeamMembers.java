@@ -24,6 +24,7 @@ public class Day06TeamMembers {
     /**
      * @param args the command line arguments
      */
+<<<<<<< HEAD
     
     static File file = new File("teams.txt");
     
