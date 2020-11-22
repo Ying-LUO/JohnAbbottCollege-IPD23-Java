@@ -49,6 +49,7 @@ public class Day07CustDialogFriends extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         miAddFriend = new javax.swing.JMenu();
 
+        dlgAddEdit.setTitle("Add/Edit");
         dlgAddEdit.setModal(true);
         dlgAddEdit.setResizable(false);
 
