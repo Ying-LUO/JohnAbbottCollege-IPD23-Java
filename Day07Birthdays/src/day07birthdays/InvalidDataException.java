@@ -8,7 +8,7 @@ package day07birthdays;
 /**
  *
  * @author YingLuo
- * @since 2020-NOV-22
+ * @since 2020-Nov-22
  * @version 1.0
  */
 public class InvalidDataException extends Exception{

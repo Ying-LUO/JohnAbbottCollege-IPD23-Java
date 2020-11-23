@@ -5,11 +5,28 @@
  */
 package day07birthdays;
 
+import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author YingLuo
+ * @since 2020-Nov-22
+ * @version 1.0
  */
 public class Day07Birthdays extends javax.swing.JFrame {
 
@@ -17,12 +34,31 @@ public class Day07Birthdays extends javax.swing.JFrame {
      * Creates new form Day07Birthdays
      */
     
-    //System.out.println(System.getProperty("java.class.path"));
+    DefaultListModel<Birthday> listModelBirthday = new DefaultListModel();
+    ArrayList<Birthday> birthdaysList = new ArrayList<>();
     
-    DefaultListModel listModelBirthday = new DefaultListModel();
+    DefaultListModel<String> listModel7DaysToDOB = new DefaultListModel();
+                                    
+    Map<String, Integer> map = new HashMap<>();
+    
+    Map<Integer, String> monthMap = new HashMap<>();
+
+    int currentlyEditedItemIndex = -1; // adding, not editing
+    
+    static final String SUFFIX_TXT = ".txt";
+    static final String FILENAME_PATTERN = ".+\\.[A-Za-z0-9]+$";
+    static final String DATA_FILENAME = "birthdays.txt";
             
     public Day07Birthdays() {
+        this.setPreferredSize(new Dimension(800, 600));
         initComponents();
+        try {
+            readDataFromFile();
+        } catch (InvalidDataException ex) {
+            JOptionPane.showMessageDialog(this, "Error saving data to file:\n" + ex.getMessage(),
+                    "File error", JOptionPane.ERROR_MESSAGE);
+        }
+        
     }
 
     /**
@@ -39,7 +75,8 @@ public class Day07Birthdays extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         dlgAddEdit_tfName = new javax.swing.JTextField();
         dlgAddEdit_btCancel = new javax.swing.JButton();
-        dlgAddEdit_btAddUpdate = new javax.swing.JButton();
+        dlgAddEdit_btSave = new javax.swing.JButton();
+        dlgAddEdit_tfBirthday = new javax.swing.JTextField();
         dlgStatistic = new javax.swing.JDialog();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -49,10 +86,15 @@ public class Day07Birthdays extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         dlgStatistic_lstBirthday = new javax.swing.JList<>();
         dlgStatistic_btDismiss = new javax.swing.JButton();
+        dlgStatistic_panel = new javax.swing.JPanel();
+        dlgStatistic_canvas = new java.awt.Canvas();
         fileChooser = new javax.swing.JFileChooser();
+        popupMenu = new javax.swing.JPopupMenu();
+        pp_miEdit = new javax.swing.JMenuItem();
+        pp_miDelete = new javax.swing.JMenuItem();
         lblStatus = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        lstBirthdays = new javax.swing.JList<>();
+        lstBirthday = new javax.swing.JList<>();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         miExport = new javax.swing.JMenuItem();
@@ -71,8 +113,18 @@ public class Day07Birthdays extends javax.swing.JFrame {
         jLabel2.setText("Birthday");
 
         dlgAddEdit_btCancel.setText("Cancel");
+        dlgAddEdit_btCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dlgAddEdit_btCancelActionPerformed(evt);
+            }
+        });
 
-        dlgAddEdit_btAddUpdate.setText("Add");
+        dlgAddEdit_btSave.setText("Add");
+        dlgAddEdit_btSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dlgAddEdit_btSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout dlgAddEditLayout = new javax.swing.GroupLayout(dlgAddEdit.getContentPane());
         dlgAddEdit.getContentPane().setLayout(dlgAddEditLayout);
@@ -83,14 +135,16 @@ public class Day07Birthdays extends javax.swing.JFrame {
                 .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(dlgAddEditLayout.createSequentialGroup()
                         .addComponent(dlgAddEdit_btCancel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(dlgAddEdit_btAddUpdate))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 171, Short.MAX_VALUE)
+                        .addComponent(dlgAddEdit_btSave))
                     .addGroup(dlgAddEditLayout.createSequentialGroup()
                         .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2))
                         .addGap(34, 34, 34)
-                        .addComponent(dlgAddEdit_tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(dlgAddEdit_tfName, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                            .addComponent(dlgAddEdit_tfBirthday))))
                 .addContainerGap(38, Short.MAX_VALUE))
         );
         dlgAddEditLayout.setVerticalGroup(
@@ -100,12 +154,14 @@ public class Day07Birthdays extends javax.swing.JFrame {
                 .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(dlgAddEdit_tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
-                .addComponent(jLabel2)
-                .addGap(35, 35, 35)
+                .addGap(19, 19, 19)
+                .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(dlgAddEdit_tfBirthday, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(30, 30, 30)
                 .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(dlgAddEdit_btCancel)
-                    .addComponent(dlgAddEdit_btAddUpdate))
+                    .addComponent(dlgAddEdit_btSave))
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
@@ -123,79 +179,139 @@ public class Day07Birthdays extends javax.swing.JFrame {
 
         jLabel5.setText("Birthday per Month");
 
-        dlgStatistic_lstBirthday.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
+        dlgStatistic_lstBirthday.setModel(listModel7DaysToDOB);
+        dlgStatistic_lstBirthday.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane2.setViewportView(dlgStatistic_lstBirthday);
 
         dlgStatistic_btDismiss.setText("Dismiss");
+        dlgStatistic_btDismiss.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dlgStatistic_btDismissActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout dlgStatistic_panelLayout = new javax.swing.GroupLayout(dlgStatistic_panel);
+        dlgStatistic_panel.setLayout(dlgStatistic_panelLayout);
+        dlgStatistic_panelLayout.setHorizontalGroup(
+            dlgStatistic_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(dlgStatistic_panelLayout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(dlgStatistic_canvas, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+        dlgStatistic_panelLayout.setVerticalGroup(
+            dlgStatistic_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dlgStatistic_panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(dlgStatistic_canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout dlgStatisticLayout = new javax.swing.GroupLayout(dlgStatistic.getContentPane());
         dlgStatistic.getContentPane().setLayout(dlgStatisticLayout);
         dlgStatisticLayout.setHorizontalGroup(
             dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dlgStatisticLayout.createSequentialGroup()
-                .addGap(27, 27, 27)
-                .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, dlgStatisticLayout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addContainerGap(178, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, dlgStatisticLayout.createSequentialGroup()
-                        .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(dlgStatisticLayout.createSequentialGroup()
-                                .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4)
-                                    .addComponent(jLabel3))
-                                .addGap(18, 18, 18)
-                                .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(dlgStatistic_tfComingBirthdays)
-                                    .addComponent(dlgStatistic_tfTotalFriends)))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(dlgStatisticLayout.createSequentialGroup()
-                .addGap(99, 99, 99)
-                .addComponent(dlgStatistic_btDismiss)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(dlgStatisticLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(dlgStatisticLayout.createSequentialGroup()
+                                    .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel4)
+                                        .addComponent(jLabel3))
+                                    .addGap(18, 18, 18)
+                                    .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(dlgStatistic_tfComingBirthdays)
+                                        .addComponent(dlgStatistic_tfTotalFriends)))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(dlgStatistic_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(dlgStatisticLayout.createSequentialGroup()
+                        .addGap(99, 99, 99)
+                        .addComponent(dlgStatistic_btDismiss)))
+                .addGap(0, 48, Short.MAX_VALUE))
         );
         dlgStatisticLayout.setVerticalGroup(
             dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(dlgStatisticLayout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(dlgStatistic_tfTotalFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(17, 17, 17)
-                .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(dlgStatistic_tfComingBirthdays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(dlgStatisticLayout.createSequentialGroup()
+                        .addGap(13, 13, 13)
+                        .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(dlgStatistic_tfTotalFriends, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(17, 17, 17)
+                        .addGroup(dlgStatisticLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(dlgStatistic_tfComingBirthdays, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel5)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dlgStatisticLayout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(dlgStatistic_panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(dlgStatistic_btDismiss)
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
+        pp_miEdit.setText("Edit");
+        pp_miEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pp_miEditActionPerformed(evt);
+            }
+        });
+        popupMenu.add(pp_miEdit);
+
+        pp_miDelete.setText("Delete");
+        pp_miDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pp_miDeleteActionPerformed(evt);
+            }
+        });
+        popupMenu.add(pp_miDelete);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Birthdays");
         setMinimumSize(new java.awt.Dimension(300, 200));
-        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
-        lblStatus.setText("? days shown, ? birthday upcoming in next 7 days");
+        lblStatus.setText("Status...");
         getContentPane().add(lblStatus, java.awt.BorderLayout.PAGE_END);
 
-        lstBirthdays.setModel(listModelBirthday);
-        lstBirthdays.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jScrollPane1.setViewportView(lstBirthdays);
+        lstBirthday.setModel(listModelBirthday);
+        lstBirthday.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        lstBirthday.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lstBirthdayMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                lstBirthdayMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                lstBirthdayMouseReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(lstBirthday);
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         jMenu1.setText("File");
 
         miExport.setText("Export to .csv...");
+        miExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miExportActionPerformed(evt);
+            }
+        });
         jMenu1.add(miExport);
 
         miExit.setText("Exit");
@@ -221,10 +337,20 @@ public class Day07Birthdays extends javax.swing.JFrame {
 
         rbmiSoryDaysTill.setSelected(true);
         rbmiSoryDaysTill.setText("BirthDay");
+        rbmiSoryDaysTill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbmiSoryDaysTillActionPerformed(evt);
+            }
+        });
         jMenu2.add(rbmiSoryDaysTill);
 
         rbmiSortDaysTill.setSelected(true);
         rbmiSortDaysTill.setText("Days Till Birthday");
+        rbmiSortDaysTill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbmiSortDaysTillActionPerformed(evt);
+            }
+        });
         jMenu2.add(rbmiSortDaysTill);
 
         jMenuBar1.add(jMenu2);
@@ -253,10 +379,29 @@ public class Day07Birthdays extends javax.swing.JFrame {
 
     private void rbmiSortNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbmiSortNameActionPerformed
         // TODO add your handling code here:
+        birthdaysList = Collections.list(listModelBirthday.elements()); 
+        birthdaysList.sort(Birthday.compareByName);
+        resetListAfterSorting();
+        
     }//GEN-LAST:event_rbmiSortNameActionPerformed
 
+
+    private void resetListAfterSorting(){
+        
+        listModelBirthday.clear();
+        
+        for(int i=0; i<birthdaysList.size(); i++ ){
+            listModelBirthday.addElement(birthdaysList.get(i));
+        }
+        
+        lstBirthday.setModel(listModelBirthday);
+        
+    }
+    
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
         // TODO add your handling code here:
+        saveDataToFile(new File(DATA_FILENAME));
+        dispose();
     }//GEN-LAST:event_miExitActionPerformed
 
     private void dlgStatistic_tfComingBirthdaysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dlgStatistic_tfComingBirthdaysActionPerformed
@@ -270,14 +415,21 @@ public class Day07Birthdays extends javax.swing.JFrame {
         dlgAddEdit.setLocationRelativeTo(this);
         dlgAddEdit.setVisible(true);
         
-        //UtilDateModel model = new UtilDateModel();
-        //JDatePanelImpl datePanel = new JDatePanelImpl(model);
-        //JDatePickerImpl datePicker = new JDatePickerImpl(datePanel);
-
-        //frame.add(datePicker);
-
+        /*
+        UtilDateModel model = new UtilDateModel();
+        Properties p = new Properties();
         
+        p.put("text.today", "Today");
+        p.put("text.month", "Month");
+        p.put("text.year", "Year");
+
+        JDatePanelImpl datePanel = new JDatePanelImpl(model, p);
         
+        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
+        dlgAddEdit.add(datePicker);
+        */
+        
+
     }//GEN-LAST:event_mnAddMouseClicked
 
     private void mnStatisticMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_mnStatisticMouseClicked
@@ -286,34 +438,260 @@ public class Day07Birthdays extends javax.swing.JFrame {
         dlgStatistic.setLocationRelativeTo(this);
         dlgStatistic.setVisible(true);
         
+        listModel7DaysToDOB.clear();
+        
+        dlgStatistic_tfTotalFriends.setText(listModelBirthday.size()+"");
+        
+        map.put("Januray: ", 0);
+        map.put("February: ", 0);
+        map.put("March: ", 0);
+        map.put("April: ", 0);
+        map.put("May: ", 0);
+        map.put("June: ", 0);
+        map.put("July: ", 0);
+        map.put("August: ", 0);
+        map.put("September: ", 0);
+        map.put("October: ", 0);
+        map.put("November: ", 0);
+        map.put("December: ", 0);
+        
+        
+        monthMap.put(0, "Januray: ");
+        monthMap.put(1, "February: ");
+        monthMap.put(2, "March: ");
+        monthMap.put(3, "April: ");
+        monthMap.put(4, "May: ");
+        monthMap.put(5, "June: ");
+        monthMap.put(6, "July: ");
+        monthMap.put(7, "August: ");
+        monthMap.put(8, "September: ");
+        monthMap.put(9, "October: ");
+        monthMap.put(10, "November: ");
+        monthMap.put(11, "December: ");
+        
+        birthdaysList = Collections.list(listModelBirthday.elements()); 
+        int count = 0;
+        for(Birthday birthday : birthdaysList){
+            
+            if(birthday.getDaysTillBirthday()<=7){
+                count++; 
+            }
+            map.put(monthMap.get(birthday.getBirthday().getMonth()), map.get(monthMap.get(birthday.getBirthday().getMonth()))+1); 
+        }
+        
+        dlgStatistic_tfComingBirthdays.setText(count+"");
+        
+        map.entrySet().forEach(entry->{
+                listModel7DaysToDOB.addElement(entry.getKey() + entry.getValue() + " birthdays");  
+        });
+        
+        
     }//GEN-LAST:event_mnStatisticMouseClicked
 
+    private void miExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExportActionPerformed
+        // TODO add your handling code here:
+        fileChooser.setDialogTitle("Export to File");
+        
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            
+            File chosenFile = fileChooser.getSelectedFile();
+            
+            if (!chosenFile.getName().toLowerCase().matches(FILENAME_PATTERN)) {
+                chosenFile = new File(fileChooser.getSelectedFile() + SUFFIX_TXT);
+            }
+            saveDataToFile(chosenFile);
+        }
+    }//GEN-LAST:event_miExportActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+        saveDataToFile(new File(DATA_FILENAME));
+        this.dispose();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void dlgAddEdit_btCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dlgAddEdit_btCancelActionPerformed
+        // TODO add your handling code here:
+        dlgAddEdit.setVisible(false);
+        //dlgAddEdit.dispose(); 
+    }//GEN-LAST:event_dlgAddEdit_btCancelActionPerformed
+
+    private void dlgStatistic_btDismissActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dlgStatistic_btDismissActionPerformed
+        // TODO add your handling code here:
+        dlgStatistic.dispose();
+    }//GEN-LAST:event_dlgStatistic_btDismissActionPerformed
+
+    private void dlgAddEdit_btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dlgAddEdit_btSaveActionPerformed
+        // TODO add your handling code here:
+        
+        try {                                                            //datePicker.getModel().getValue().valueToString;
+            Birthday birthday = new Birthday(dlgAddEdit_tfName.getText(), Birthday.dateFormat.parse(dlgAddEdit_tfBirthday.getText()));   
+            
+            if(currentlyEditedItemIndex == -1){   
+                listModelBirthday.addElement(birthday);   
+                
+            }else {                  
+                listModelBirthday.setElementAt(birthday, currentlyEditedItemIndex);                
+            }
+            
+        } catch (ParseException ex) {    
+            JOptionPane.showMessageDialog(this, "Date format yyyy-mm-dd: " + ex.getMessage());
+            
+        } catch (InvalidDataException ex) {          
+            JOptionPane.showMessageDialog(this, "Error in adding birthday: " + ex.getMessage());
+        }
+
+        dlgAddEdit_tfName.setText("");
+        dlgAddEdit_tfBirthday.setText("");
+        dlgAddEdit.setVisible(false);
+        
+    }//GEN-LAST:event_dlgAddEdit_btSaveActionPerformed
+
+    private void lstBirthdayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBirthdayMouseClicked
+        // TODO add your handling code here:
+        if(evt.getClickCount() == 2 && evt.getButton() == MouseEvent.BUTTON1){  // if double click happened
+            
+            int index = lstBirthday.getSelectedIndex();
+            
+            if(index <0){
+                return;
+            }
+            
+            dlgAddEdit_btSave.setText("Update");
+            currentlyEditedItemIndex = index;
+            dlgAddEdit_tfName.setText(listModelBirthday.get(index).getName());
+            dlgAddEdit_tfBirthday.setText(Birthday.dateFormat.format(listModelBirthday.get(index).getBirthday()));
+            
+            dlgAddEdit.pack();  // Without this the dialog window will be too small to see
+            dlgAddEdit.setVisible(true);
+            dlgAddEdit.setLocationRelativeTo(this);
+            
+        }
+        
+        if(lstBirthday.getSelectedIndex() >= 0){
+            lblStatus.setText(lstBirthday.getSelectedValue().toString());
+        }else{
+            lblStatus.setText("");
+        }
+        
+    }//GEN-LAST:event_lstBirthdayMouseClicked
+
+    private void rbmiSoryDaysTillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbmiSoryDaysTillActionPerformed
+        // TODO add your handling code here:
+        birthdaysList = Collections.list(listModelBirthday.elements()); 
+        birthdaysList.sort(Birthday.compareByBirthday);
+        resetListAfterSorting();
+    }//GEN-LAST:event_rbmiSoryDaysTillActionPerformed
+
+    private void rbmiSortDaysTillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbmiSortDaysTillActionPerformed
+        // TODO add your handling code here:
+        birthdaysList = Collections.list(listModelBirthday.elements()); 
+        birthdaysList.sort(Birthday.compareByDaysTillNextDOB);
+        resetListAfterSorting();
+    }//GEN-LAST:event_rbmiSortDaysTillActionPerformed
+
+    private void lstBirthdayMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBirthdayMousePressed
+        // TODO add your handling code here:
+        if(evt.isPopupTrigger()){
+            popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+        
+    }//GEN-LAST:event_lstBirthdayMousePressed
+
+    private void lstBirthdayMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBirthdayMouseReleased
+        // TODO add your handling code here:
+        if(evt.isPopupTrigger()){
+            popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_lstBirthdayMouseReleased
+
+    private void pp_miEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pp_miEditActionPerformed
+        // TODO add your handling code here:
+        int index = lstBirthday.getSelectedIndex();
+            
+            if(index <0){
+                return;
+            }
+            
+            dlgAddEdit_btSave.setText("Save");
+            currentlyEditedItemIndex = index;
+            dlgAddEdit_tfName.setText(listModelBirthday.get(index).getName());
+            dlgAddEdit_tfBirthday.setText(Birthday.dateFormat.format(listModelBirthday.get(index).getBirthday()));
+            
+            dlgAddEdit.pack();  // Without this the dialog window will be too small to see
+            dlgAddEdit.setVisible(true);
+            dlgAddEdit.setLocationRelativeTo(this);
+        
+    }//GEN-LAST:event_pp_miEditActionPerformed
+
+    private void pp_miDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pp_miDeleteActionPerformed
+        // TODO add your handling code here:
+        int index = lstBirthday.getSelectedIndex();
+            
+            if(index <0){
+                return;
+            }
+            
+        int decision = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this item?\n" + lstBirthday.getSelectedValue().toDataString(),
+                "Confirm deletion",
+                JOptionPane.OK_CANCEL_OPTION);
+        if (decision == JOptionPane.OK_OPTION) {
+            listModelBirthday.removeElementAt(index);
+        }
+        
+    }//GEN-LAST:event_pp_miDeleteActionPerformed
+
+    private void saveDataToFile(File file) {
+        
+        try (PrintWriter fileOutput = new PrintWriter(file)) {
+            for (int i = 0; i < listModelBirthday.size(); i++) {
+                String dataLine  = listModelBirthday.getElementAt(i).toDataString();
+                fileOutput.println(dataLine);
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error saving data to file:\n" + ex.getMessage(),
+                    "File error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void readDataFromFile() throws InvalidDataException {
+        
+        ArrayList<String> errorList = new ArrayList<>();
+        
+        int lineNo = 0;
+        
+        try (Scanner fileInput = new Scanner(new File(DATA_FILENAME))) {
+            
+            while (fileInput.hasNextLine()) {
+                
+                try {
+                    
+                    lineNo++;
+                    String line = fileInput.nextLine();             
+                    Birthday birthday = new Birthday(line);                   
+                    listModelBirthday.addElement(birthday);
+                    
+                } catch (InvalidDataException e) {
+                    errorList.add(String.format("Error in line %d: %s", lineNo, e.getMessage()));
+                }
+            }
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Errors reading data file: " + ex.getMessage(), "File error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        if (!errorList.isEmpty()) {
+            JOptionPane.showMessageDialog(this, String.join("\n", errorList), "File error", JOptionPane.ERROR_MESSAGE);
+        }
+    }    
+        
+    
+    
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Day07Birthdays.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Day07Birthdays.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Day07Birthdays.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Day07Birthdays.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+        //System.out.println(System.getProperty("java.class.path"));
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -325,12 +703,15 @@ public class Day07Birthdays extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDialog dlgAddEdit;
-    private javax.swing.JButton dlgAddEdit_btAddUpdate;
     private javax.swing.JButton dlgAddEdit_btCancel;
+    private javax.swing.JButton dlgAddEdit_btSave;
+    private javax.swing.JTextField dlgAddEdit_tfBirthday;
     private javax.swing.JTextField dlgAddEdit_tfName;
     private javax.swing.JDialog dlgStatistic;
     private javax.swing.JButton dlgStatistic_btDismiss;
+    private java.awt.Canvas dlgStatistic_canvas;
     private javax.swing.JList<String> dlgStatistic_lstBirthday;
+    private javax.swing.JPanel dlgStatistic_panel;
     private javax.swing.JTextField dlgStatistic_tfComingBirthdays;
     private javax.swing.JTextField dlgStatistic_tfTotalFriends;
     private javax.swing.JFileChooser fileChooser;
@@ -345,11 +726,14 @@ public class Day07Birthdays extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblStatus;
-    private javax.swing.JList<Birthday> lstBirthdays;
+    private javax.swing.JList<Birthday> lstBirthday;
     private javax.swing.JMenuItem miExit;
     private javax.swing.JMenuItem miExport;
     private javax.swing.JMenu mnAdd;
     private javax.swing.JMenu mnStatistic;
+    private javax.swing.JPopupMenu popupMenu;
+    private javax.swing.JMenuItem pp_miDelete;
+    private javax.swing.JMenuItem pp_miEdit;
     private javax.swing.JRadioButtonMenuItem rbmiSortDaysTill;
     private javax.swing.JRadioButtonMenuItem rbmiSortName;
     private javax.swing.JRadioButtonMenuItem rbmiSoryDaysTill;
