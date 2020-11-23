@@ -101,8 +101,8 @@ public class Day07Birthdays extends javax.swing.JFrame {
         miExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         rbmiSortName = new javax.swing.JRadioButtonMenuItem();
-        rbmiSoryDaysTill = new javax.swing.JRadioButtonMenuItem();
-        rbmiSortDaysTill = new javax.swing.JRadioButtonMenuItem();
+        rbmiSoryBirthday = new javax.swing.JRadioButtonMenuItem();
+        rbmiSortDaysTillDOB = new javax.swing.JRadioButtonMenuItem();
         mnAdd = new javax.swing.JMenu();
         mnStatistic = new javax.swing.JMenu();
 
@@ -335,23 +335,23 @@ public class Day07Birthdays extends javax.swing.JFrame {
         });
         jMenu2.add(rbmiSortName);
 
-        rbmiSoryDaysTill.setSelected(true);
-        rbmiSoryDaysTill.setText("BirthDay");
-        rbmiSoryDaysTill.addActionListener(new java.awt.event.ActionListener() {
+        rbmiSoryBirthday.setSelected(true);
+        rbmiSoryBirthday.setText("Birthday");
+        rbmiSoryBirthday.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbmiSoryDaysTillActionPerformed(evt);
+                rbmiSoryBirthdayActionPerformed(evt);
             }
         });
-        jMenu2.add(rbmiSoryDaysTill);
+        jMenu2.add(rbmiSoryBirthday);
 
-        rbmiSortDaysTill.setSelected(true);
-        rbmiSortDaysTill.setText("Days Till Birthday");
-        rbmiSortDaysTill.addActionListener(new java.awt.event.ActionListener() {
+        rbmiSortDaysTillDOB.setSelected(true);
+        rbmiSortDaysTillDOB.setText("Days Till Birthday");
+        rbmiSortDaysTillDOB.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rbmiSortDaysTillActionPerformed(evt);
+                rbmiSortDaysTillDOBActionPerformed(evt);
             }
         });
-        jMenu2.add(rbmiSortDaysTill);
+        jMenu2.add(rbmiSortDaysTillDOB);
 
         jMenuBar1.add(jMenu2);
 
@@ -442,6 +442,8 @@ public class Day07Birthdays extends javax.swing.JFrame {
         
         dlgStatistic_tfTotalFriends.setText(listModelBirthday.size()+"");
         
+        int [] bdayFreqs = new int[12];
+        
         map.put("Januray: ", 0);
         map.put("February: ", 0);
         map.put("March: ", 0);
@@ -455,6 +457,7 @@ public class Day07Birthdays extends javax.swing.JFrame {
         map.put("November: ", 0);
         map.put("December: ", 0);
         
+        //String [] monthsArray = {"January", "February", "March", "April"}
         
         monthMap.put(0, "Januray: ");
         monthMap.put(1, "February: ");
@@ -575,19 +578,19 @@ public class Day07Birthdays extends javax.swing.JFrame {
         
     }//GEN-LAST:event_lstBirthdayMouseClicked
 
-    private void rbmiSoryDaysTillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbmiSoryDaysTillActionPerformed
+    private void rbmiSoryBirthdayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbmiSoryBirthdayActionPerformed
         // TODO add your handling code here:
         birthdaysList = Collections.list(listModelBirthday.elements()); 
         birthdaysList.sort(Birthday.compareByBirthday);
         resetListAfterSorting();
-    }//GEN-LAST:event_rbmiSoryDaysTillActionPerformed
+    }//GEN-LAST:event_rbmiSoryBirthdayActionPerformed
 
-    private void rbmiSortDaysTillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbmiSortDaysTillActionPerformed
+    private void rbmiSortDaysTillDOBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbmiSortDaysTillDOBActionPerformed
         // TODO add your handling code here:
         birthdaysList = Collections.list(listModelBirthday.elements()); 
         birthdaysList.sort(Birthday.compareByDaysTillNextDOB);
         resetListAfterSorting();
-    }//GEN-LAST:event_rbmiSortDaysTillActionPerformed
+    }//GEN-LAST:event_rbmiSortDaysTillDOBActionPerformed
 
     private void lstBirthdayMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstBirthdayMousePressed
         // TODO add your handling code here:
@@ -734,8 +737,8 @@ public class Day07Birthdays extends javax.swing.JFrame {
     private javax.swing.JPopupMenu popupMenu;
     private javax.swing.JMenuItem pp_miDelete;
     private javax.swing.JMenuItem pp_miEdit;
-    private javax.swing.JRadioButtonMenuItem rbmiSortDaysTill;
+    private javax.swing.JRadioButtonMenuItem rbmiSortDaysTillDOB;
     private javax.swing.JRadioButtonMenuItem rbmiSortName;
-    private javax.swing.JRadioButtonMenuItem rbmiSoryDaysTill;
+    private javax.swing.JRadioButtonMenuItem rbmiSoryBirthday;
     // End of variables declaration//GEN-END:variables
 }
