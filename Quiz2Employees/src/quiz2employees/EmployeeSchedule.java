@@ -52,7 +52,7 @@ public class EmployeeSchedule {
             }
             setDateHired(dateFormat.parse(dataStr[1]));
             setDepartment(dataStr[2]);
-            String[] workDays = dataStr[3].split(",");
+            String[] workDays = dataStr[3].replace(" ", "").split(",");
             for(int i=0; i<workDays.length; i++){
                 workdaysList.add(Weekday.valueOf(workDays[i]));
             }
@@ -120,21 +120,7 @@ public class EmployeeSchedule {
         
         return workdaysList;
     }
-    
-    public String getWorkdaysListValue() {
-        
-        String weekdayList = "";
-        
-        for(Weekday wkDay : workdaysList){
-            
-            weekdayList += wkDay+",";
-            
-        }
-        
-        return weekdayList;
-    }
-
-
+   
     public void setWorkdaysList(HashSet<Weekday> workdaysList) {
         this.workdaysList = workdaysList;
     }
@@ -148,7 +134,7 @@ public class EmployeeSchedule {
                 ", " + isManager +
                 " of " + this.department + 
                 ", hired on " + dateFormat.format(this.dateHired) +
-                ", works on " + this.getWorkdaysListValue();
+                ", works on " + this.getWorkdaysList().toString().replace("[", "").replace("]", "");
         
     }
     
@@ -157,7 +143,7 @@ public class EmployeeSchedule {
         
         String isManager = (isIsManager())? "*" : "";
         
-        return String.format("%s;%s;%s;%s", this.name+isManager, dateFormat.format(this.dateHired), this.department, this.getWorkdaysListValue());
+        return String.format("%s;%s;%s;%s", this.name+isManager, dateFormat.format(this.dateHired), this.department, this.getWorkdaysList().toString().replace("[", "").replace("]", ""));
         
     } 
     

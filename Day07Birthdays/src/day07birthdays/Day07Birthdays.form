@@ -4,6 +4,7 @@
   <NonVisualComponents>
     <Container class="javax.swing.JDialog" name="dlgAddEdit">
       <Properties>
+        <Property name="modal" type="boolean" value="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
 
@@ -92,6 +93,7 @@
     </Container>
     <Container class="javax.swing.JDialog" name="dlgStatistic">
       <Properties>
+        <Property name="modal" type="boolean" value="true"/>
         <Property name="resizable" type="boolean" value="false"/>
       </Properties>
 

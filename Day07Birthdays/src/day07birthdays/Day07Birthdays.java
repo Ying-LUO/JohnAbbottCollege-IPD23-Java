@@ -106,6 +106,7 @@ public class Day07Birthdays extends javax.swing.JFrame {
         mnAdd = new javax.swing.JMenu();
         mnStatistic = new javax.swing.JMenu();
 
+        dlgAddEdit.setModal(true);
         dlgAddEdit.setResizable(false);
 
         jLabel1.setText("Name");
@@ -165,6 +166,7 @@ public class Day07Birthdays extends javax.swing.JFrame {
                 .addContainerGap(30, Short.MAX_VALUE))
         );
 
+        dlgStatistic.setModal(true);
         dlgStatistic.setResizable(false);
 
         jLabel3.setText("Total No. of Friends");

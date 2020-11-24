@@ -89,6 +89,7 @@ public class Quiz2Employees extends javax.swing.JFrame {
         miAdd = new javax.swing.JMenu();
 
         dlgAddEdit.setTitle("Add or Edit");
+        dlgAddEdit.setModal(true);
         dlgAddEdit.setResizable(false);
 
         jLabel1.setText("Name");
@@ -136,11 +137,12 @@ public class Quiz2Employees extends javax.swing.JFrame {
                                     .addComponent(jLabel2)
                                     .addGap(18, 18, 18)
                                     .addComponent(dlgAddEdit_tfHiredDate, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addComponent(dlgAddEdit_ckbManager)
                                 .addGroup(dlgAddEditLayout.createSequentialGroup()
                                     .addComponent(jLabel1)
                                     .addGap(49, 49, 49)
-                                    .addComponent(dlgAddEdit_tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                    .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(dlgAddEdit_ckbManager)
+                                        .addComponent(dlgAddEdit_tfName, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))))))
                     .addGroup(dlgAddEditLayout.createSequentialGroup()
                         .addGap(56, 56, 56)
                         .addComponent(dlgAddEdit_btCancel)))
@@ -162,9 +164,9 @@ public class Quiz2Employees extends javax.swing.JFrame {
                         .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1)
                             .addComponent(dlgAddEdit_tfName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(18, 18, 18)
+                        .addGap(12, 12, 12)
                         .addComponent(dlgAddEdit_ckbManager)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(dlgAddEditLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(dlgAddEdit_tfHiredDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -358,27 +360,25 @@ public class Quiz2Employees extends javax.swing.JFrame {
 
     private void dlgAddEdit_btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dlgAddEdit_btSaveActionPerformed
         // TODO add your handling code here:
-        try {        
+        try {   
             
-            EmployeeSchedule employeeSchedule = new EmployeeSchedule(
+            if(!dlgAddEdit_lstWeekday.isSelectionEmpty()){
+                EmployeeSchedule employeeSchedule = new EmployeeSchedule(
                                                                     dlgAddEdit_tfName.getText(), 
                                                                     dlgAddEdit_ckbManager.isSelected(),
                                                                     dlgAddEdit_tfDepartment.getText(), 
                                                                     EmployeeSchedule.dateFormat.parse(dlgAddEdit_tfHiredDate.getText())
                                                                     );   
-            if(!dlgAddEdit_lstWeekday.isSelectionEmpty()){
                 
                 HashSet weekdays = new HashSet<>(Arrays.asList(dlgAddEdit_lstWeekday.getSelectedValuesList()));
                 employeeSchedule.setWorkdaysList(weekdays);
                 
                 if(currentlyEditedItemIndex == -1){   
-                listModelEmployeeSchedule.addElement(employeeSchedule);   
-                
-                }else {                  
-                    listModelEmployeeSchedule.setElementAt(employeeSchedule, currentlyEditedItemIndex);                
-                }
+                    listModelEmployeeSchedule.addElement(employeeSchedule);   
+                    }else {                  
+                        listModelEmployeeSchedule.setElementAt(employeeSchedule, currentlyEditedItemIndex);                
+                    }
             }else{
-                
                 JOptionPane.showMessageDialog(this, "Please choose at least one workday");
             }
 
@@ -445,7 +445,7 @@ public class Quiz2Employees extends javax.swing.JFrame {
             dlgAddEdit_ckbManager.setSelected(listModelEmployeeSchedule.get(index).isIsManager());
             dlgAddEdit_tfHiredDate.setText(EmployeeSchedule.dateFormat.format(listModelEmployeeSchedule.get(index).getDateHired()));
             dlgAddEdit_tfDepartment.setText(listModelEmployeeSchedule.get(index).getDepartment());
-            dlgAddEdit_lstWeekday.setSelectedValue(listModelEmployeeSchedule.get(index).getWorkdaysList(), true);
+            //dlgAddEdit_lstWeekday.setSelectedValue(listModelEmployeeSchedule.get(index).getWorkdaysList(), true);
             
     }
     
