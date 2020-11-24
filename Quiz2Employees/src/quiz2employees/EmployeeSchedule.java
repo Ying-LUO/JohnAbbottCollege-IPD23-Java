@@ -117,8 +117,23 @@ public class EmployeeSchedule {
     }
 
     public HashSet<Weekday> getWorkdaysList() {
+        
         return workdaysList;
     }
+    
+    public String getWorkdaysListValue() {
+        
+        String weekdayList = "";
+        
+        for(Weekday wkDay : workdaysList){
+            
+            weekdayList += wkDay+",";
+            
+        }
+        
+        return weekdayList;
+    }
+
 
     public void setWorkdaysList(HashSet<Weekday> workdaysList) {
         this.workdaysList = workdaysList;
@@ -129,10 +144,11 @@ public class EmployeeSchedule {
         
         String isManager = (isIsManager())? "manager" : "employee";
         
-        return name + isManager +
+        return name + 
+                ", " + isManager +
                 " of " + this.department + 
                 ", hired on " + dateFormat.format(this.dateHired) +
-                ", works on " + this.getWorkdaysList().toString();
+                ", works on " + this.getWorkdaysListValue();
         
     }
     
@@ -141,12 +157,14 @@ public class EmployeeSchedule {
         
         String isManager = (isIsManager())? "*" : "";
         
-        return String.format("%s;%s;%s;%s", this.name+isManager, dateFormat.format(this.dateHired), this.department, this.getWorkdaysList().toString());
+        return String.format("%s;%s;%s;%s", this.name+isManager, dateFormat.format(this.dateHired), this.department, this.getWorkdaysListValue());
         
     } 
     
     final static Comparator<EmployeeSchedule> compareByName = (EmployeeSchedule e1, EmployeeSchedule e2) -> e1.name.compareTo(e2.name);
     
     final static Comparator<EmployeeSchedule> compareByHiredDate = (EmployeeSchedule e1, EmployeeSchedule e2) -> e1.dateHired.compareTo(e2.dateHired);
+
+    
     
 }

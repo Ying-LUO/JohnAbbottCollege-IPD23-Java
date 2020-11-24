@@ -339,10 +339,8 @@ public class Quiz2Employees extends javax.swing.JFrame {
             
             dlgAddEdit_btSave.setText("Update");
             currentlyEditedItemIndex = index;
-            dlgAddEdit_tfName.setText(listModelEmployeeSchedule.get(index).getName());
-            dlgAddEdit_ckbManager.setSelected(listModelEmployeeSchedule.get(index).isIsManager());
-            dlgAddEdit_tfHiredDate.setText(EmployeeSchedule.dateFormat.format(listModelEmployeeSchedule.get(index).getDateHired()));
-            dlgAddEdit_tfDepartment.setText(listModelEmployeeSchedule.get(index).getDepartment());
+            
+            setValueFromListToDialog(index);
             
             dlgAddEdit.pack();  // Without this the dialog window will be too small to see
             dlgAddEdit.setVisible(true);
@@ -433,16 +431,24 @@ public class Quiz2Employees extends javax.swing.JFrame {
             
             dlgAddEdit_btSave.setText("Save");
             currentlyEditedItemIndex = index;
-            dlgAddEdit_tfName.setText(listModelEmployeeSchedule.get(index).getName());
-            dlgAddEdit_ckbManager.setSelected(listModelEmployeeSchedule.get(index).isIsManager());
-            dlgAddEdit_tfDepartment.setText(listModelEmployeeSchedule.get(index).getDepartment());
-            dlgAddEdit_tfHiredDate.setText(EmployeeSchedule.dateFormat.format(listModelEmployeeSchedule.get(index).getDateHired()));
+
+            setValueFromListToDialog(index);
             
             dlgAddEdit.pack();  // Without this the dialog window will be too small to see
             dlgAddEdit.setVisible(true);
             dlgAddEdit.setLocationRelativeTo(this);
     }//GEN-LAST:event_pp_miEditActionPerformed
 
+    private void setValueFromListToDialog(int index){
+        
+            dlgAddEdit_tfName.setText(listModelEmployeeSchedule.get(index).getName());
+            dlgAddEdit_ckbManager.setSelected(listModelEmployeeSchedule.get(index).isIsManager());
+            dlgAddEdit_tfHiredDate.setText(EmployeeSchedule.dateFormat.format(listModelEmployeeSchedule.get(index).getDateHired()));
+            dlgAddEdit_tfDepartment.setText(listModelEmployeeSchedule.get(index).getDepartment());
+            dlgAddEdit_lstWeekday.setSelectedValue(listModelEmployeeSchedule.get(index).getWorkdaysList(), true);
+            
+    }
+    
     private void resetListAfterSorting(){
         
         listModelEmployeeSchedule.clear();    
