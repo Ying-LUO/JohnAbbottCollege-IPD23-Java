@@ -212,9 +212,6 @@ public class Quiz2Employees extends javax.swing.JFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 lstEmployeeMousePressed(evt);
             }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                lstEmployeeMouseReleased(evt);
-            }
         });
         jScrollPane1.setViewportView(lstEmployee);
 
@@ -324,9 +321,14 @@ public class Quiz2Employees extends javax.swing.JFrame {
 
     private void miAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_miAddMouseClicked
         // TODO add your handling code here:
-        dlgAddEdit.pack();  // Without this the dialog window will be too small to see
-        dlgAddEdit.setLocationRelativeTo(this);
-        dlgAddEdit.setVisible(true);
+        if (evt.getButton() == MouseEvent.BUTTON1) {
+            dlgAddEdit_btSave.setText("Add");
+            currentlyEditedItemIndex = -1;
+            clearAllSelections();
+            dlgAddEdit.pack();
+            dlgAddEdit.setLocationRelativeTo(this);
+            dlgAddEdit.setVisible(true);
+        }
     }//GEN-LAST:event_miAddMouseClicked
 
     private void lstEmployeeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstEmployeeMouseClicked
@@ -350,19 +352,17 @@ public class Quiz2Employees extends javax.swing.JFrame {
             
         }
         
-        if(lstEmployee.getSelectedIndex() >= 0){
-            lblStatus.setText(lstEmployee.getSelectedValue().toString());
-        }else{
-            lblStatus.setText("");
-        }
+        updateLableStatus();
         
     }//GEN-LAST:event_lstEmployeeMouseClicked
 
     private void dlgAddEdit_btSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dlgAddEdit_btSaveActionPerformed
         // TODO add your handling code here:
+        
         try {   
             
             if(!dlgAddEdit_lstWeekday.isSelectionEmpty()){
+                
                 EmployeeSchedule employeeSchedule = new EmployeeSchedule(
                                                                     dlgAddEdit_tfName.getText(), 
                                                                     dlgAddEdit_ckbManager.isSelected(),
@@ -373,11 +373,8 @@ public class Quiz2Employees extends javax.swing.JFrame {
                 HashSet weekdays = new HashSet<>(Arrays.asList(dlgAddEdit_lstWeekday.getSelectedValuesList()));
                 employeeSchedule.setWorkdaysList(weekdays);
                 
-                if(currentlyEditedItemIndex == -1){   
-                    listModelEmployeeSchedule.addElement(employeeSchedule);   
-                    }else {                  
-                        listModelEmployeeSchedule.setElementAt(employeeSchedule, currentlyEditedItemIndex);                
-                    }
+                listModelEmployeeSchedule.addElement(employeeSchedule);  
+    
             }else{
                 JOptionPane.showMessageDialog(this, "Please choose at least one workday");
             }
@@ -393,7 +390,6 @@ public class Quiz2Employees extends javax.swing.JFrame {
         }
 
         clearAllSelections();
-
         dlgAddEdit.setVisible(false);
         
     }//GEN-LAST:event_dlgAddEdit_btSaveActionPerformed
@@ -414,13 +410,6 @@ public class Quiz2Employees extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_lstEmployeeMousePressed
 
-    private void lstEmployeeMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lstEmployeeMouseReleased
-        // TODO add your handling code here:
-        if(evt.isPopupTrigger()){
-            popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
-        }
-    }//GEN-LAST:event_lstEmployeeMouseReleased
-
     private void pp_miEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pp_miEditActionPerformed
         // TODO add your handling code here:
         int index = lstEmployee.getSelectedIndex();
@@ -437,14 +426,27 @@ public class Quiz2Employees extends javax.swing.JFrame {
             dlgAddEdit.pack();  // Without this the dialog window will be too small to see
             dlgAddEdit.setVisible(true);
             dlgAddEdit.setLocationRelativeTo(this);
+            
+            updateLableStatus();
+            
     }//GEN-LAST:event_pp_miEditActionPerformed
 
+    private void updateLableStatus(){
+        
+        if(lstEmployee.getSelectedIndex() >= 0){
+            lblStatus.setText(lstEmployee.getSelectedValue().toString());
+        }else{
+            lblStatus.setText("");
+        }
+    }
+    
     private void setValueFromListToDialog(int index){
         
             dlgAddEdit_tfName.setText(listModelEmployeeSchedule.get(index).getName());
             dlgAddEdit_ckbManager.setSelected(listModelEmployeeSchedule.get(index).isIsManager());
             dlgAddEdit_tfHiredDate.setText(EmployeeSchedule.dateFormat.format(listModelEmployeeSchedule.get(index).getDateHired()));
             dlgAddEdit_tfDepartment.setText(listModelEmployeeSchedule.get(index).getDepartment());
+            dlgAddEdit_lstWeekday.setSelectedValue(Weekday.values(), true);
             //dlgAddEdit_lstWeekday.setSelectedValue(listModelEmployeeSchedule.get(index).getWorkdaysList(), true);
             
     }
