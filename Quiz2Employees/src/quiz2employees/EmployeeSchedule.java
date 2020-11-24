@@ -125,6 +125,11 @@ public class EmployeeSchedule {
         this.workdaysList = workdaysList;
     }
     
+    private boolean isWorkingOn(Weekday weekday){
+        
+        return (workdaysList.contains(weekday))? true: false;
+    }
+    
     @Override
     public String toString() {
         
@@ -139,7 +144,7 @@ public class EmployeeSchedule {
     }
     
     
-    public String toDataString(){
+    public String toDataLine(){
         
         String isManager = (isIsManager())? "*" : "";
         

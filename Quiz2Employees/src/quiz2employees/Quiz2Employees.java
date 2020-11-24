@@ -373,7 +373,15 @@ public class Quiz2Employees extends javax.swing.JFrame {
                 HashSet weekdays = new HashSet<>(Arrays.asList(dlgAddEdit_lstWeekday.getSelectedValuesList()));
                 employeeSchedule.setWorkdaysList(weekdays);
                 
-                listModelEmployeeSchedule.addElement(employeeSchedule);  
+                if(currentlyEditedItemIndex == -1){   
+                    
+                    listModelEmployeeSchedule.addElement(employeeSchedule);    
+                
+                }else {              
+                    
+                    listModelEmployeeSchedule.setElementAt(employeeSchedule, currentlyEditedItemIndex);                
+                }
+                
     
             }else{
                 JOptionPane.showMessageDialog(this, "Please choose at least one workday");
@@ -465,7 +473,7 @@ public class Quiz2Employees extends javax.swing.JFrame {
         try (PrintWriter fileOutput = new PrintWriter(file)) {
             
             for (int i = 0; i < listModelEmployeeSchedule.size(); i++) {
-                String dataLine  = listModelEmployeeSchedule.getElementAt(i).toDataString();
+                String dataLine  = listModelEmployeeSchedule.getElementAt(i).toDataLine();
                 fileOutput.println(dataLine);
             }
         } catch (IOException ex) {
