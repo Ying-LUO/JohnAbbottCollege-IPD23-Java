@@ -1,12 +1,12 @@
-restty;2009-08-07;cukfyl;Thursday, Monday, Wednesday, Tuesday, Sunday
-xvadvc*;2020-01-01;dvdav dcs;Thursday, Monday, Wednesday, Tuesday
-caca*;2020-09-01;vsdvsabfhb;Thursday, Friday
-DSVDv*;2020-09-09;vdsvDSBVDS;Thursday, Wednesday, Friday
-fsdvsd;2020-07-07;vdsbfbvsf;Thursday, Friday
-cascas*;2020-09-08;cdvdavcadv;Thursday
-tttttt*;2020-09-10;dsgdsfs;Saturday, Friday
-DFSVD;2020-09-19;VSDVBSDVSD;Thursday, Saturday
-QQQ*;2020-09-11;fewvgBV;Saturday
+restty;2009-08-07;cukfyl;Wednesday, Monday, Sunday, Tuesday, Thursday
+fdfcascas*;2020-01-01;dewfWFEW;Wednesday, Friday, Saturday
+xvadvc*;2020-01-01;dvdav dcs;Wednesday, Monday, Tuesday, Thursday
+fsdvsd;2020-07-07;vdsbfbvsf;Friday, Thursday
+fsdvsd;2020-07-07;vdsbfbvsf;Wednesday, Sunday, Saturday
 rewdsc;2020-08-08;cdsvdsv;Wednesday, Friday
-fsdvsd;2020-07-07;vdsbfbvsf;Saturday, Wednesday, Sunday
-fdfcascas*;2020-01-01;dewfWFEW;Saturday, Wednesday, Friday
+caca*;2020-09-01;vsdvsabfhb;Friday, Thursday
+cascas*;2020-09-08;cdvdavcadv;Thursday
+DSVDv*;2020-09-09;vdsvDSBVDS;Wednesday, Friday, Thursday
+tttttt*;2020-09-10;dsgdsfs;Friday, Saturday
+QQQ*;2020-09-11;fewvgBV;Saturday
+DFSVD;2020-09-19;VSDVBSDVSD;Saturday, Thursday
