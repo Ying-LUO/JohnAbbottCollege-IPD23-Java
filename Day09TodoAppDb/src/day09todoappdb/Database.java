@@ -29,7 +29,7 @@ public class Database {
         
         String dbURL = "jdbc:mysql://localhost:3306/ipd23todoapp";
         String username = "root";
-        String password = "root";
+        String password = "StrongPWD123";
 
         conn = DriverManager.getConnection(dbURL, username, password);
 
