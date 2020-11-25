@@ -26,7 +26,7 @@ public class Database {
     public Database() throws SQLException{
         
         //if define here which is local variable that cannot be used for others
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ipd23people", "root", "root");
+        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ipd23people", "root", "StrongPWD123");
 
         
     }

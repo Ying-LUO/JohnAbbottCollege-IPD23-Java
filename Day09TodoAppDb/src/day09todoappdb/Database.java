@@ -22,30 +22,32 @@ import java.sql.Date;
 public class Database {
     
     // move it outside from the constructor to be a field
-    Connection conn;
+    private Connection conn;
+    private static final String DBURL = "jdbc:mysql://localhost:3306/ipd23todoapp";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "StrongPWD123";
             
             
     public Database() throws SQLException{
         
-        String dbURL = "jdbc:mysql://localhost:3306/ipd23todoapp";
-        String username = "root";
-        String password = "StrongPWD123";
-
-        conn = DriverManager.getConnection(dbURL, username, password);
+        conn = DriverManager.getConnection(DBURL, USERNAME, PASSWORD);
 
     }
     
     // database lier which exception may happens
-    public ArrayList<Todo> getAllTodos() throws SQLException, InvalidDataException{
+    public ArrayList<Todo> getAllTodos() throws SQLException{
         
         ArrayList<Todo> resultList = new ArrayList<>();
         
-        String sql = "SELECT * FROM todos";
+        try {
+            
 
-        Statement statement = conn.createStatement();
-        ResultSet result = statement.executeQuery(sql); //SQLException
+            String sql = "SELECT * FROM todos";
 
-        while (result.next()){
+            Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery(sql); //SQLException
+
+            while (result.next()){
     
                 int id = result.getInt("id");
                 String task = result.getString("task");
@@ -53,9 +55,13 @@ public class Database {
                 Date dueDate = result.getDate("dueDate");
                 Status status = Status.valueOf(result.getString("status"));
 
+            
                 resultList.add(new Todo(id, task, difficulty, dueDate, status));
+            
+            }
+        } catch (InvalidDataException | IllegalArgumentException ex) {
+                throw new SQLException("Error getting todo from database", ex.getMessage());
         }
-        
         return resultList;
     }
     

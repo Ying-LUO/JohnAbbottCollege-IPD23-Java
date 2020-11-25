@@ -9,8 +9,6 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -25,6 +23,7 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
      */
     
     DefaultListModel<Todo> listModelTodo = new DefaultListModel<>();
+    //DefaultListModel<Todo.Status> listModelTodoStatus = new DefaultListModel<>(Todo.Status.values());
     Database db;
     
     public Day09TodoAppDb() {
@@ -39,10 +38,10 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
             
         }
         
-        loadPeopleFromDatabase();
+        loadTodoFromDatabase();
     }
     
-    void loadPeopleFromDatabase(){
+    void loadTodoFromDatabase(){
         
         try{
             ArrayList<Todo> list = db.getAllTodos();
@@ -50,9 +49,6 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
             listModelTodo.clear();
             listModelTodo.addAll(list);
             
-        }catch (InvalidDataException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to load data from database" + ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);
         }catch(SQLException ex){    
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to connect" + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
@@ -158,15 +154,8 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(18, 18, 18)
-                        .addComponent(lblDifficulty)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(sliderDifficulty, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -176,59 +165,67 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
                                 .addGap(81, 81, 81)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblId)
-                                    .addComponent(tfTask, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jLabel6))
-                                .addGap(55, 55, 55)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(cmbStatus, 0, 217, Short.MAX_VALUE)
-                                    .addComponent(ftfDueDate))))
-                        .addGap(8, 8, 8)))
-                .addContainerGap(19, Short.MAX_VALUE))
+                                    .addComponent(tfTask, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel5)
+                                        .addComponent(jLabel6))
+                                    .addGap(55, 55, 55)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(cmbStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(ftfDueDate, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel4)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(lblDifficulty)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(sliderDifficulty, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(91, 91, 91)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btDelete, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btUpdate, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addGap(24, 24, 24)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lblId))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(lblId))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(tfTask, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(sliderDifficulty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(6, 6, 6)
-                                .addComponent(sliderDifficulty, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(19, 19, 19)
+                                .addGap(11, 11, 11)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jLabel4)
-                                    .addComponent(lblDifficulty))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(lblDifficulty)
+                                    .addComponent(jLabel4))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel5)
-                            .addComponent(ftfDueDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6))
-                        .addGap(28, 28, 28)
+                            .addComponent(ftfDueDate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(btAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btUpdate)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btDelete))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addComponent(btDelete)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pack();
@@ -258,7 +255,7 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
         lblId.setText("-");
         tfTask.setText("");
         sliderDifficulty.setValue(1);
-        ftfDueDate.setText("1999-01-01");
+        ftfDueDate.setText("1970-01-01");
         cmbStatus.setSelectedItem(Todo.Status.Pending);
     }
     
@@ -268,7 +265,7 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
         
         try {
             
-            if(tfTask.getText().replaceAll("\\s+","").isEmpty()){
+            if(tfTask.getText().replaceAll("\\s+","").isEmpty()){   //IllegalArgumentException
                 
                 JOptionPane.showMessageDialog(this, "Task must be 1-100 characters");
                 
@@ -280,22 +277,16 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
  
                 String task = tfTask.getText();
                 int difficulty = sliderDifficulty.getValue();
-                Date dueDate = new java.sql.Date(Todo.dateFormat.parse(ftfDueDate.getText()).getTime());
+                Date dueDate = new java.sql.Date(Todo.dateFormat.parse(ftfDueDate.getText()).getTime());        //ParseException
                 Todo.Status status = Todo.Status.valueOf(cmbStatus.getSelectedItem().toString());
             
-                db.addTodo(new Todo(0, task, difficulty, dueDate, status));
-                loadPeopleFromDatabase();
+                db.addTodo(new Todo(0, task, difficulty, dueDate, status));  //InvalidDataException
+                loadTodoFromDatabase();
                 //cleanup inputs
                 clearUpInputs();
             }
 
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);
-        } catch (ParseException ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);
-        } catch (InvalidDataException ex) {
+        } catch (IllegalArgumentException | ParseException | InvalidDataException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to add record" + ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
@@ -327,7 +318,7 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
                 Todo t = new Todo(id, task, difficulty, dueDate, status);
 
                 db.updateTodo(t);
-                loadPeopleFromDatabase();
+                loadTodoFromDatabase();
             }
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
@@ -365,7 +356,7 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Failed to delete record");
                 }
             }
-            loadPeopleFromDatabase();
+            loadTodoFromDatabase();
         } catch (NumberFormatException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);

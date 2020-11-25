@@ -75,8 +75,8 @@ public class Todo {
     public void setDueDate(Date dueDate) throws InvalidDataException {
         
         try {
-            if(dueDate.before(dateFormat.parse("1900-01-01")) || dueDate.after(dateFormat.parse("2100-01-01"))){
-                throw new InvalidDataException("dueDate must be between 1900 and 2100");
+            if(dueDate.before(dateFormat.parse("1970-01-01")) || dueDate.after(dateFormat.parse("2100-01-01"))){
+                throw new InvalidDataException("dueDate must be between 1970 and 2100");
             }
             this.dueDate = dueDate;
         } catch (ParseException ex) {
