@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package day09peopledb;
+package day09todoappdb;
 
+import day09todoappdb.Todo.Status;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.sql.Date;
 
 /**
  *
@@ -25,45 +27,50 @@ public class Database {
             
     public Database() throws SQLException{
         
-        //if define here which is local variable that cannot be used for others
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/ipd23people", "root", "root");
+        String dbURL = "jdbc:mysql://localhost:3306/ipd23todoapp";
+        String username = "root";
+        String password = "root";
 
-        
+        conn = DriverManager.getConnection(dbURL, username, password);
+
     }
     
     // database lier which exception may happens
-    public ArrayList<Person> getAllPeople() throws SQLException{
+    public ArrayList<Todo> getAllTodos() throws SQLException, InvalidDataException{
         
-        ArrayList<Person> resultList = new ArrayList<>();
+        ArrayList<Todo> resultList = new ArrayList<>();
         
-        String sql = "SELECT * FROM people";
+        String sql = "SELECT * FROM todos";
 
         Statement statement = conn.createStatement();
         ResultSet result = statement.executeQuery(sql); //SQLException
 
         while (result.next()){
+    
+                int id = result.getInt("id");
+                String task = result.getString("task");
+                int difficulty = result.getInt("difficulty");
+                Date dueDate = result.getDate("dueDate");
+                Status status = Status.valueOf(result.getString("status"));
 
-            int id = result.getInt("id");
-
-            String name = result.getString("name");
-            int age = result.getInt("age");
-
-            resultList.add(new Person(id, name, age));
+                resultList.add(new Todo(id, task, difficulty, dueDate, status));
         }
         
         return resultList;
     }
     
     // return new inserted record id
-    public int addPerson(Person p) throws SQLException{
+    public int addTodo(Todo t) throws SQLException{
         
         
-        String sql = "INSERT INTO people (name, age) VALUES (?, ?)";
+        String sql = "INSERT INTO todos (task, difficulty, dueDate, status) VALUES (?, ?, ?, ?)";
 
         PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
-        statement.setString(1, p.getName());
-        statement.setInt(2, p.getAge());
+        statement.setString(1, t.getTask());
+        statement.setInt(2, t.getDifficulty());
+        statement.setDate(3, t.getDueDate());
+        statement.setString(4, t.getStatus().toString());
 
         statement.executeUpdate();  //SQLException
 
@@ -78,22 +85,24 @@ public class Database {
         throw new SQLException("Id after insert not found");
     }
     
-    public void updatePerson(Person p) throws SQLException{
+    public void updateTodo(Todo t) throws SQLException{
 
-        String sql = "UPDATE people SET name=?, age=? WHERE id=?";
+        String sql = "UPDATE todos SET task=?, difficulty=? , dueDate=?, status=? WHERE id=?";
 
         PreparedStatement statement = conn.prepareStatement(sql);
-        statement.setString(1, p.getName());
-        statement.setInt(2, p.getAge());
-        statement.setInt(3, p.getId());
+        statement.setString(1, t.getTask());
+        statement.setInt(2, t.getDifficulty());
+        statement.setDate(3, t.getDueDate());
+        statement.setString(4, t.getStatus().toString());
+        statement.setInt(5, t.getId());
 
         statement.executeUpdate();
        
     }
     
-    public int deletePerson(int id) throws SQLException{
+    public int deleteTodo(int id) throws SQLException{
         
-        String sql = "DELETE FROM people WHERE id=?";
+        String sql = "DELETE FROM todos WHERE id=?";
  
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setInt(1, id);

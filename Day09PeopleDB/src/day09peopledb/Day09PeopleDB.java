@@ -198,7 +198,7 @@ public class Day09PeopleDB extends javax.swing.JFrame {
     private void btUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btUpdateActionPerformed
         // TODO add your handling code here:
         try {
-            int id = Integer.parseInt(jLabel1.getText());  // NumberFormatException
+            int id = Integer.parseInt(lblId.getText());  // NumberFormatException
             String name = tfName.getText();
             int age = (Integer)spinAge.getValue();
             Person p = new Person(id, name, age);
@@ -216,7 +216,28 @@ public class Day09PeopleDB extends javax.swing.JFrame {
 
     private void btDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteActionPerformed
         // TODO add your handling code here:
-        
+        try {
+            int id = Integer.parseInt(lblId.getText());  // NumberFormatException
+            
+            int decision = JOptionPane.showConfirmDialog(this,
+                                                        "Are you sure you want to delete this item?\n" + lstPerson.getSelectedValue().toString(),
+                                                        "Confirm deletion",
+                                                        JOptionPane.OK_CANCEL_OPTION);
+            if (decision == JOptionPane.OK_OPTION) {
+                int result = db.deletePerson(id);
+                if(result >0){
+                    JOptionPane.showMessageDialog(this, "Delete record successfully");
+                }else{
+                    JOptionPane.showMessageDialog(this, "Failed to delete record");
+                }
+            }
+            loadPeopleFromDatabase();
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);
+        }catch (SQLException ex) {
+            JOptionPane.showMessageDialog(this, "Failed to delete a record" + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
+        }
         
     }//GEN-LAST:event_btDeleteActionPerformed
 
