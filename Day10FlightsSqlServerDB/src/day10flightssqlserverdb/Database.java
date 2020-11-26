@@ -28,7 +28,7 @@ public class Database {
     
     public Database() throws SQLException{
         
-        DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+        //DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
         conn = DriverManager.getConnection(connectionUrl);
 
     }

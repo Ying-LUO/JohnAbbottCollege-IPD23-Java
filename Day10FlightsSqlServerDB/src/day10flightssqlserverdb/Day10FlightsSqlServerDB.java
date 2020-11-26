@@ -6,7 +6,6 @@
 package day10flightssqlserverdb;
 
 import java.awt.Dimension;
-import java.awt.List;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
@@ -47,7 +46,7 @@ public class Day10FlightsSqlServerDB extends javax.swing.JFrame {
         }catch(SQLException ex){
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to connect: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
-            
+            System.exit(1);
         }
         
         loadFlightFromDatabase();
@@ -319,7 +318,7 @@ public class Day10FlightsSqlServerDB extends javax.swing.JFrame {
         try {
 
                 Date onDay = Flight.dateFormat.parse(dlgAddEdit_ftfOnDay.getText());    //ParseException
-                String fromCode = dlgAddEdit_tfFromCode.getText();
+                String fromCode = dlgAddEdit_tfFromCode.getText();        //IllegalArgumentException
                 String toCode = dlgAddEdit_tfToCode.getText();
                 int passengers = dlgAddEdit_sliderPassengers.getValue();
                 Flight.Type type = (Flight.Type)dlgAddEdit_cmbType.getSelectedItem();
@@ -327,7 +326,7 @@ public class Day10FlightsSqlServerDB extends javax.swing.JFrame {
                 Flight flight = new Flight(0, onDay, fromCode, toCode, type, passengers);
 
                 if(currentlyEditedItemIndex == -1){
-                    db.addFlight(flight);  //InvalidDataException
+                    db.addFlight(flight);  //SQLException InvalidDataException
                 }else{
                     int id = lstFlight.getSelectedValue().getId();
                     flight = new Flight(id, onDay, fromCode, toCode, type, passengers);
