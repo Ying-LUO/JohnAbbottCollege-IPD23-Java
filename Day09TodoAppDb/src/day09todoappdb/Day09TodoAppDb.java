@@ -9,6 +9,7 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -23,7 +24,9 @@ public class Day09TodoAppDb extends javax.swing.JFrame {
      */
     
     DefaultListModel<Todo> listModelTodo = new DefaultListModel<>();
-    //DefaultListModel<Todo.Status> listModelTodoStatus = new DefaultListModel<>(Todo.Status.values());
+    // used for combo box list get value from enumaration
+    DefaultComboBoxModel<Todo.Status> modelStatusComboList = new DefaultComboBoxModel<>(Todo.Status.values());
+
     Database db;
     
     public Day09TodoAppDb() {
