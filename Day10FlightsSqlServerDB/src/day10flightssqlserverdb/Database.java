@@ -109,14 +109,14 @@ public class Database {
        
     }
     
-    public int deleteFlight(int id) throws SQLException{
+    public void deleteFlight(int id) throws SQLException{
         
         String sql = "DELETE FROM IPD23.Flights WHERE id=?";
  
         PreparedStatement statement = conn.prepareStatement(sql);
         statement.setInt(1, id);
 
-        return statement.executeUpdate();
+        statement.executeUpdate();
         
     }
     

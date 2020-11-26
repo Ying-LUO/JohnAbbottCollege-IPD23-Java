@@ -46,7 +46,7 @@ public class Day10FlightsSqlServerDB extends javax.swing.JFrame {
             
         }catch(SQLException ex){
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to connect" + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to connect: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
             
         }
         
@@ -63,7 +63,7 @@ public class Day10FlightsSqlServerDB extends javax.swing.JFrame {
             
         }catch(SQLException ex){    
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to connect" + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to connect: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
         } 
     }
 
@@ -337,13 +337,13 @@ public class Day10FlightsSqlServerDB extends javax.swing.JFrame {
                 //cleanup inputs
                 clearUpInputs();
                 dlgAddEdit.setVisible(false);
-
+                lblStatus.setText("Total Flights: " + listModelFlight.size());
         } catch (IllegalArgumentException | ParseException | InvalidDataException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to add Flight" + ex.getMessage(), "Internal error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to add Flight: " + ex.getMessage(), "Internal error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to connect" + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to connect: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
         }
         
     }//GEN-LAST:event_dlgAddEdit_btSaveActionPerformed
@@ -355,37 +355,32 @@ public class Day10FlightsSqlServerDB extends javax.swing.JFrame {
 
     private void miPopupDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miPopupDeleteActionPerformed
         // TODO add your handling code here:
-        Flight f = lstFlight.getSelectedValue();
             
-        if(f == null){
+        if(lstFlight.isSelectionEmpty()){
             return;
-        }
-            
-        int decision = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete this item?\n" + lstFlight.getSelectedValue().toString(),
+        }else{
+            int decision = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete " + lstFlight.getSelectedIndices().length + "records?\n",
                 "Confirm deletion",
                 JOptionPane.OK_CANCEL_OPTION);
-        
-        if (decision == JOptionPane.OK_OPTION) {
-            try {
-                
-                int result = db.deleteFlight(f.getId());
-                
-                if(result >0){
-                    JOptionPane.showMessageDialog(this, "Delete record successfully");
-                    
-                }else{
-                    JOptionPane.showMessageDialog(this, "Failed to delete record");
+            
+            if (decision == JOptionPane.OK_OPTION) {
+                try {
+
+                    for(Flight f : lstFlight.getSelectedValuesList()){
+                        
+                        db.deleteFlight(f.getId());
+                    }
+
+                    loadFlightFromDatabase();
+                    lblStatus.setText("Total Flights: " + db.getAllFlights().size());   //or listModelFlight.size()
+
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Failed to delete a record: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
                 }
-                
-                loadFlightFromDatabase();
-                lblStatus.setText("Total Flights: " + db.getAllFlights().size());   //or listModelFlight.size()
-                
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Failed to delete a record" + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+            } 
+        } 
     }//GEN-LAST:event_miPopupDeleteActionPerformed
 
     private void lstFlightValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstFlightValueChanged

@@ -16,6 +16,7 @@ import java.util.Date;
 public class Flight {
 
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); 
+    static final String CODE_PATTERN = "^[a-zA-Z]$";
     
     enum Type {
         Domestic, International, Private
@@ -64,9 +65,10 @@ public class Flight {
         return fromCode;
     }
 
+    //WON'T CHECK IF UPPER CASE, LOOKS UN-USERFRIENDLY
     public void setFromCode(String fromCode) throws InvalidDataException {
         
-        if (fromCode.length() < 3 || fromCode.length() > 5) {
+        if (fromCode.length() < 3 || fromCode.length() > 5 || !validtaeString(fromCode)) {
             throw new InvalidDataException("Code must be 3-5 characters");
         }
         this.fromCode = fromCode.toUpperCase();
@@ -76,8 +78,9 @@ public class Flight {
         return toCode;
     }
 
+    //WON'T CHECK IF UPPER CASE, LOOKS UN-USERFRIENDLY
     public void setToCode(String toCode) throws InvalidDataException {
-        if (toCode.length() < 3 || toCode.length() > 5) {
+        if (toCode.length() < 3 || toCode.length() > 5 || !validtaeString(toCode)){
             throw new InvalidDataException("Code must be 3-5 characters");
         }
         this.toCode = toCode.toUpperCase();
@@ -113,4 +116,15 @@ public class Flight {
         
     } 
     
+    private boolean validtaeString(String str) {
+      str = str.toUpperCase();
+      char[] charArray = str.toCharArray();
+      for (int i = 0; i < charArray.length; i++) {
+         char ch = charArray[i];
+         if (!(ch >= 'A' && ch <= 'Z')) {
+            return false;
+         }
+      }
+      return true;
+    }
 }
