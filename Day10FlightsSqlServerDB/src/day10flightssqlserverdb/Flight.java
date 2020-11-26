@@ -16,7 +16,7 @@ import java.util.Date;
 public class Flight {
 
     static final SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy"); 
-    static final String CODE_PATTERN = "^[a-zA-Z]$";
+    //static final String CODE_PATTERN = "^[a-zA-Z]$"; failed to validate by regex
     
     enum Type {
         Domestic, International, Private
