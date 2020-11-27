@@ -505,7 +505,7 @@ public class Day11CarOwners extends javax.swing.JFrame {
                 inputPhoto = owner.getPhoto();
                 InputStream is = inputPhoto.getBinaryStream(1, inputPhoto.length());
                 currentImage = ImageIO.read(is);
-                Image scaledImg = currentImage.getScaledInstance(currentImage.getWidth(), currentImage.getHeight(), Image.SCALE_DEFAULT);
+                Image scaledImg = currentImage.getScaledInstance(lblPhoto.getWidth(), lblPhoto.getHeight(), Image.SCALE_DEFAULT);
                 lblPhoto.setIcon(new ImageIcon(scaledImg));
                 
                 listModelCar.clear();
