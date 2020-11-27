@@ -103,6 +103,7 @@ public class Quiz3BooksAndAuthors extends javax.swing.JFrame {
         lblAuthor = new javax.swing.JLabel();
 
         dlgAuthor.setModal(true);
+        dlgAuthor.setResizable(false);
 
         jLabel5.setText("Name");
 
