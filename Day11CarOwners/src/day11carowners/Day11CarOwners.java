@@ -469,13 +469,13 @@ public class Day11CarOwners extends javax.swing.JFrame {
         
         try {
             
-            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 
                 File chosenFile = fileChooser.getSelectedFile();
                 currentImage = ImageIO.read(chosenFile);
                 Image scaledImg = currentImage.getScaledInstance(lblPhoto.getWidth(), lblPhoto.getHeight(), Image.SCALE_SMOOTH);
                 lblPhoto.setIcon(new ImageIcon(scaledImg));
-                inputPhoto = new SerialBlob(Files.readAllBytes(chosenFile.toPath()));;
+                inputPhoto = new SerialBlob(Files.readAllBytes(chosenFile.toPath()));
             }
         }
          catch (SQLException | IOException ex) {
@@ -559,7 +559,6 @@ public class Day11CarOwners extends javax.swing.JFrame {
                 
                 }
                 
-
                 dlgCar_btUpdateCar.setEnabled(true);
                 dlgCar_btDeleteCar.setEnabled(true);
                 dlgCar_btAddCar.setEnabled(false);
@@ -722,6 +721,10 @@ public class Day11CarOwners extends javax.swing.JFrame {
             if(db.getOwnerNames().contains(name)){
                 JOptionPane.showMessageDialog(this, "name already exist, please input another one");
                 return;
+            }
+            
+            if(inputPhoto==null){
+                inputPhoto = db.getOwnerById(ownerId).get(0).getPhoto();
             }
             Owner owner = new Owner(0, name, inputPhoto);
             owner.setId(ownerId);
