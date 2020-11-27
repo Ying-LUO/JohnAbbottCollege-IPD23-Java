@@ -551,7 +551,13 @@ public class Day11CarOwners extends javax.swing.JFrame {
                     ownerIdIndexMap.put(listModelDlgOwner.getElementAt(i).getId(), i);
                 }
 
-                dlgCar_lstAllOwners.setSelectedIndex((int)ownerIdIndexMap.get(car.getOwnerId()));
+                if(car.getOwnerId()==0){
+                    
+                    dlgCar_lstAllOwners.clearSelection();
+                }else{
+                    dlgCar_lstAllOwners.setSelectedIndex((int)ownerIdIndexMap.get(car.getOwnerId()));
+                
+                }
                 
 
                 dlgCar_btUpdateCar.setEnabled(true);
@@ -724,7 +730,7 @@ public class Day11CarOwners extends javax.swing.JFrame {
             clearUpInputs();
         } catch (InvalidDataException ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Failed to create owner " + ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Failed to update owner " + ex.getMessage(), "Internel error", JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Failed to connect: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
