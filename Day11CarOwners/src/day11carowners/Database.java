@@ -290,7 +290,12 @@ public class Database {
             
             while (result.next()){
 
-                int ownerId = result.getInt("ownerId");
+                int ownerId=0;
+                if(result.getObject("ownerId")!=null){
+                     ownerId = result.getInt("ownerId");
+                }else{
+                    ownerId = 0;
+                }
                 String makeModel = result.getString("makeModel");
                 int prodYear = result.getInt("prodYear");
                 String plates = result.getString("plates");
@@ -360,6 +365,24 @@ public class Database {
         }
         
         statement.setInt(5, c.getId());
+
+        statement.executeUpdate();
+       
+    }
+    
+    public void updateCarOwnerId(int ownerId, int carId) throws SQLException{
+
+        String sql = "UPDATE cars SET ownerId=? WHERE id=?";
+
+        PreparedStatement statement = conn.prepareStatement(sql);
+        
+        if(ownerId == 0){
+            statement.setNull(1, Types.NULL);
+        }else{
+            statement.setInt(1, ownerId);
+        }
+
+        statement.setInt(2, carId);
 
         statement.executeUpdate();
        

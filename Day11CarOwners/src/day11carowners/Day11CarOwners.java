@@ -20,8 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.sql.Blob;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
 import javax.sql.rowset.serial.SerialBlob;
 
 /**
@@ -218,10 +217,9 @@ public class Day11CarOwners extends javax.swing.JFrame {
                         .addGroup(dlgCarsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(dlgCar_lblId)
                             .addComponent(dlgCar_tfMakeModel, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dlgCarsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(dlgCar_btUpdateCar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(dlgCar_btAddCar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(dlgCar_btDeleteCar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(dlgCar_btUpdateCar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dlgCar_btAddCar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dlgCar_btDeleteCar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addGroup(dlgCarsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel6)
@@ -287,6 +285,7 @@ public class Day11CarOwners extends javax.swing.JFrame {
 
         jLabel4.setText("Photo");
 
+        lblPhoto.setAlignmentY(0.0F);
         lblPhoto.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         lblPhoto.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -376,14 +375,12 @@ public class Day11CarOwners extends javax.swing.JFrame {
                                     .addComponent(jLabel4))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lblPhoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(lblPhoto, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tfName)
                                     .addComponent(lblId, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(59, 59, 59)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel2)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addGap(24, 24, 24))
         );
@@ -490,6 +487,7 @@ public class Day11CarOwners extends javax.swing.JFrame {
 
     private void btDeletePhotoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeletePhotoActionPerformed
         // TODO add your handling code here:
+        
         currentImage = null;
         inputPhoto = null;
     }//GEN-LAST:event_btDeletePhotoActionPerformed
@@ -517,6 +515,7 @@ public class Day11CarOwners extends javax.swing.JFrame {
                 btDeleteOwner.setEnabled(true);
                 btAddOwner.setEnabled(false);
                 btGiveUpCar.setEnabled(true);
+                btDeletePhoto.setEnabled(true);
             } catch (SQLException | IOException ex) {
                 ex.printStackTrace();
                 JOptionPane.showMessageDialog(this, "Error loading owner " + ex.getMessage(),
@@ -527,6 +526,7 @@ public class Day11CarOwners extends javax.swing.JFrame {
             btUpdateOwner.setEnabled(false);
             btDeleteOwner.setEnabled(false);
             btGiveUpCar.setEnabled(false);
+            btDeletePhoto.setEnabled(false);
         }
     }//GEN-LAST:event_lstOwnerHasCarsValueChanged
 
@@ -546,7 +546,13 @@ public class Day11CarOwners extends javax.swing.JFrame {
                 dlgCar_tfProdYear.setText(car.getProdYear()+"");
                 dlgCar_tfPlates.setText(car.getPlates());
                 
-                //dlgCar_lstAllOwners.setSelectedIndex(WIDTH);
+                HashMap ownerIdIndexMap = new HashMap<>();
+                for(int i=0; i<listModelDlgOwner.getSize();i++){
+                    ownerIdIndexMap.put(listModelDlgOwner.getElementAt(i).getId(), i);
+                }
+
+                dlgCar_lstAllOwners.setSelectedIndex((int)ownerIdIndexMap.get(car.getOwnerId()));
+                
 
                 dlgCar_btUpdateCar.setEnabled(true);
                 dlgCar_btDeleteCar.setEnabled(true);
@@ -653,12 +659,24 @@ public class Day11CarOwners extends javax.swing.JFrame {
 
     private void dlgCar_btUpdateOwnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dlgCar_btUpdateOwnerActionPerformed
         
-        if(dlgCar_lstAllOwners.isSelectionEmpty()){
-            JOptionPane.showMessageDialog(this, "Please choose at least one owner");
-            return;
+        try {
+            if(dlgCar_lstAllOwners.isSelectionEmpty()){
+                JOptionPane.showMessageDialog(this, "Please choose at least one owner");
+                return;
+            }
+            
+            String[] str = dlgCar_lstAllCars.getSelectedValue().split(":");
+            int carId = Integer.valueOf(str[0]);
+            
+            int ownerId = dlgCar_lstAllOwners.getSelectedValue().getId();
+            
+            db.updateCarOwnerId(ownerId, carId);
+            loadCarOwnersFromDatabase();
+            clearUpInputs();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Failed to update a record: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
         }
-        
-        
         
     }//GEN-LAST:event_dlgCar_btUpdateOwnerActionPerformed
 
@@ -716,6 +734,27 @@ public class Day11CarOwners extends javax.swing.JFrame {
 
     private void btDeleteOwnerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btDeleteOwnerActionPerformed
         // TODO add your handling code here:
+        String[] str = lstOwnerHasCars.getSelectedValue().split(":");
+            int ownerId = Integer.valueOf(str[0]);
+            
+            int decision = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete " + lstOwnerHasCars.getSelectedValue() + " ?",
+                "Confirm deletion",
+                JOptionPane.OK_CANCEL_OPTION);
+            
+            if (decision == JOptionPane.OK_OPTION) {
+                
+                try {
+                    db.deleteOwner(ownerId);
+                    
+                    clearDlgInput();
+                    loadCarOwnersFromDatabase();
+                    
+                }catch (SQLException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Failed to delete a record: " + ex.getMessage(), "Database error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
     }//GEN-LAST:event_btDeleteOwnerActionPerformed
 
     
